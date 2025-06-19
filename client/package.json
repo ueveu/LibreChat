@@ -1,6 +1,6 @@
 {
   "name": "@librechat/frontend",
-  "version": "NextStrategy-1.0",
+  "version": "v0.7.8",
   "description": "",
   "type": "module",
   "scripts": {
