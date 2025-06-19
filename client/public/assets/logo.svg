@@ -1,11 +1,37 @@
-<?xml version="1.0" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
- "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
- width="451.000000pt" height="153.000000pt" viewBox="0 0 451.000000 153.000000"
- preserveAspectRatio="xMidYMid meet">
-
-<g transform="translate(0.000000,153.000000) scale(0.100000,-0.100000)"
-fill="#000000" stroke="none">
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 400 80" width="400" height="80">
+  <!-- Gradient definitions using authentic NextStrategy.ai colors -->
+  <defs>
+    <linearGradient id="nxsGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#95ee85;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#87c6ba;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="80" fill="transparent"/>
+  
+  <!-- NXS Logo Mark - Larger -->
+  <g transform="translate(15, 15)">
+    <rect x="0" y="0" width="50" height="50" rx="12" fill="#95ee85"/>
+    <text x="25" y="35" font-family="Inter, Arial, sans-serif" 
+          font-size="22" font-weight="900" text-anchor="middle" fill="#141414">
+      NXS
+    </text>
+    <rect x="42" y="-3" width="12" height="12" rx="3" fill="#87c6ba"/>
+    <text x="48" y="6" font-family="Inter, Arial, sans-serif" 
+          font-size="8" font-weight="900" text-anchor="middle" fill="white">
+      AI
+    </text>
+  </g>
+  
+  <!-- NextStrategy.ai text - Larger -->
+  <text x="80" y="40" font-family="Inter, Arial, sans-serif" 
+        font-size="26" font-weight="700" fill="#141414">
+    NextStrategy
+  </text>
+  <text x="260" y="40" font-family="Inter, Arial, sans-serif" 
+        font-size="26" font-weight="700" fill="#87c6ba">
+    .ai
+  </text>
 </svg>

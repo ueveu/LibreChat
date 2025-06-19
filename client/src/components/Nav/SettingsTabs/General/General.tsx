@@ -40,24 +40,19 @@ export const ThemeSelector = ({
 }) => {
   const localize = useLocalize();
 
-  const themeOptions = [
-    { value: 'system', label: localize('com_nav_theme_system') },
-    { value: 'dark', label: localize('com_nav_theme_dark') },
-    { value: 'light', label: localize('com_nav_theme_light') },
-  ];
+  // Force light theme
+  React.useEffect(() => {
+    if (theme !== 'light') {
+      onChange('light');
+    }
+  }, [theme, onChange]);
 
   return (
     <div className="flex items-center justify-between">
       <div>{localize('com_nav_theme')}</div>
-
-      <Dropdown
-        value={theme}
-        onChange={onChange}
-        options={themeOptions}
-        sizeClasses="w-[180px]"
-        testId="theme-selector"
-        className="z-50"
-      />
+      <div className="text-text-secondary">
+        {localize('com_nav_theme_light')}
+      </div>
     </div>
   );
 };
