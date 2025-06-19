@@ -1,31 +1,11 @@
-<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="greenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#94ed85;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#85e1c0;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#87C6BA;stop-opacity:1" />
-    </linearGradient>
-    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#141414" flood-opacity="0.3"/>
-    </filter>
-  </defs>
-  
-  <!-- Background circle -->
-  <circle cx="256" cy="256" r="240" fill="url(#greenGradient)" filter="url(#shadow)"/>
-  
-  <!-- NextStrategy text -->
-  <text x="256" y="200" font-family="Montserrat, Arial, sans-serif" font-weight="800" font-size="36" 
-        text-anchor="middle" fill="#141414">Next</text>
-  <text x="256" y="240" font-family="Montserrat, Arial, sans-serif" font-weight="800" font-size="36" 
-        text-anchor="middle" fill="#141414">Strategy</text>
-  
-  <!-- AI accent -->
-  <text x="256" y="290" font-family="Montserrat, Arial, sans-serif" font-weight="800" font-size="48" 
-        text-anchor="middle" fill="#ffffff">AI</text>
-        
-  <!-- Decorative elements -->
-  <circle cx="180" cy="120" r="8" fill="#ffffff" opacity="0.7"/>
-  <circle cx="320" cy="380" r="12" fill="#ffffff" opacity="0.5"/>
-  <circle cx="120" cy="300" r="6" fill="#ffffff" opacity="0.8"/>
-  <circle cx="380" cy="160" r="10" fill="#ffffff" opacity="0.6"/>
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+ "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+ width="451.000000pt" height="153.000000pt" viewBox="0 0 451.000000 153.000000"
+ preserveAspectRatio="xMidYMid meet">
+
+<g transform="translate(0.000000,153.000000) scale(0.100000,-0.100000)"
+fill="#000000" stroke="none">
+</g>
 </svg>
