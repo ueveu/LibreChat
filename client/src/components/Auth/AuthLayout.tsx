@@ -70,12 +70,24 @@ function AuthLayout({
       <div className="flex flex-grow items-center justify-center">
         <div className="w-authPageWidth overflow-hidden bg-white px-6 py-4 dark:bg-gray-900 sm:max-w-md sm:rounded-lg">
           {!hasStartupConfigError && !isFetching && (
-            <h1
-              className="mb-4 text-center text-3xl font-semibold text-black dark:text-white"
-              style={{ userSelect: 'none' }}
-            >
-              {header}
-            </h1>
+            <>
+              {['login', 'register'].some((p) => pathname.includes(p)) && (
+                <div className="flex justify-center mb-4">
+                  <img
+                    src="/assets/maskable-icon.png"
+                    alt="App Logo"
+                    className="h-20 w-20 rounded-full shadow-md dark:bg-gray-800"
+                    style={{ objectFit: 'cover' }}
+                  />
+                </div>
+              )}
+              <h1
+                className="mb-4 text-center text-3xl font-semibold text-black dark:text-white"
+                style={{ userSelect: 'none' }}
+              >
+                {header}
+              </h1>
+            </>
           )}
           {children}
           {!pathname.includes('2fa') &&
