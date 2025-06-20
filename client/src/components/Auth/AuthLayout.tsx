@@ -72,12 +72,12 @@ function AuthLayout({
           {!hasStartupConfigError && !isFetching && (
             <>
               {['login', 'register'].some((p) => pathname.includes(p)) && (
-                <div className="flex justify-center mb-4">
+                <div className="flex justify-center mb-6">
                   <img
-                    src="/assets/maskable-icon.png"
-                    alt="App Logo"
-                    className="h-20 w-20 rounded-full shadow-md dark:bg-gray-800"
-                    style={{ objectFit: 'cover' }}
+                    src="/assets/nextstrategy-logo.svg"
+                    alt="NextStrategy AI Logo"
+                    className="h-16 w-auto"
+                    style={{ objectFit: 'contain' }}
                   />
                 </div>
               )}
