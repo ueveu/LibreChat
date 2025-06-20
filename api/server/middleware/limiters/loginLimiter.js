@@ -1,6 +1,15 @@
 const rateLimit = require('express-rate-limit');
 const { RedisStore } = require('rate-limit-redis');
 const { removePorts, isEnabled } = require('~/server/utils');
+
+// Early exit if the login rate limiter has been disabled
+if (
+  isEnabled(process.env.DISABLE_LOGIN_LIMITER) ||
+  isEnabled(process.env.DISABLE_RATE_LIMITERS)
+) {
+  module.exports = (req, res, next) => next();
+}
+
 const ioredisClient = require('~/cache/ioredisClient');
 const { logViolation } = require('~/cache');
 const { logger } = require('~/config');
