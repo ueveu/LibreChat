@@ -1,5 +1,5 @@
 {
-  "name": "@librechat/backend",
+  "name": "@nxsgpt/backend",
   "version": "v0.7.8",
   "description": "",
   "scripts": {
@@ -32,7 +32,7 @@
   "bugs": {
     "url": "https://github.com/danny-avila/LibreChat/issues"
   },
-  "homepage": "https://librechat.ai",
+  "homepage": "https://nextstrategy.ai",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.37.0",
     "@aws-sdk/client-s3": "^3.758.0",
