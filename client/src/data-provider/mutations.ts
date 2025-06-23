@@ -1,5 +1,6 @@
 import {
   Constants,
+  LocalStorageKeys,
   defaultAssistantsVersion,
   ConversationListResponse,
 } from 'librechat-data-provider';
@@ -38,7 +39,8 @@ export const useGenTitleMutation = (): TGenTitleMutation => {
         ...c,
         title: response.title,
       }));
-      document.title = response.title;
+      const appTitle = localStorage.getItem(LocalStorageKeys.APP_TITLE) ?? '';
+      document.title = appTitle ? `${response.title} | ${appTitle}` : response.title;
     },
   });
 };

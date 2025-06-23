@@ -4,14 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-nxsGPT is a full-stack AI chat platform that provides a unified interface for multiple AI providers (OpenAI, Anthropic, Google, etc.). The project is organized as a monorepo with separate API backend and React frontend.
+nxsGPT is a full-stack AI chat platform that provides a unified interface for multiple AI providers (OpenAI, Anthropic, Google, etc.). Built as a LibreChat fork, the project is organized as a monorepo with separate API backend and React frontend, supporting advanced features like agents, assistants, code artifacts, and MCP server integration.
 
 ## Key Commands
 
 ### Development
 - `npm run backend:dev` - Start API server in development mode (port 3080)
 - `npm run frontend:dev` - Start client development server (Vite HMR)
-- `npm run build:data-provider && npm run build:data-schemas && npm run build:api` - Build shared packages before frontend
+- `npm run build:data-provider && npm run build:data-schemas && npm run build:api` - Build shared packages before frontend (required order)
+- `npm run frontend` - Full frontend build (includes all packages + client)
+- Single test files: `cd api && npm test -- --testNamePattern="specific test"` or `cd client && npm test -- specific.test.js`
 
 ### Testing
 - `npm run test:api` - Run backend tests (Jest + MongoDB Memory Server)
@@ -20,6 +22,7 @@ nxsGPT is a full-stack AI chat platform that provides a unified interface for mu
 - `npm run e2e:headed` - Run E2E tests with browser UI
 - `npm run e2e:debug` - Debug E2E tests with PWDEBUG
 - `npm run e2e:codegen` - Generate E2E test code with Playwright
+- `npm run e2e:a11y` - Run accessibility tests with axe-core
 
 ### Linting & Formatting
 - `npm run lint` - Lint all TypeScript/JavaScript files
@@ -47,6 +50,12 @@ nxsGPT is a full-stack AI chat platform that provides a unified interface for mu
 - `cd imap-mcp && python -m pytest` - Run email MCP server tests
 - `cd imap-mcp && python -m imap_mcp.server` - Start email MCP server
 - Configuration: `imap-mcp/config.sample.yaml` (copy to `config.yaml` and configure)
+
+### N8N Integration (Workflow Automation)
+- `./start-with-n8n.sh` - Start LibreChat with full N8N stack
+- `./fix-n8n-url.sh` - Fix N8N URL configuration for external access
+- **Access**: N8N button in LibreChat UI opens workflow automation interface
+- **Services**: Includes N8N, PostgreSQL, Ollama, Qdrant vector DB
 
 ## Architecture
 
@@ -113,6 +122,22 @@ nxsGPT is a full-stack AI chat platform that provides a unified interface for mu
 6. **Database**: MongoDB (primary), Redis (sessions), PostgreSQL+pgvector (RAG)
 7. **Ports**: Backend (3080), Frontend dev server (3090), MeiliSearch (7700)
 
+### Development Notes
+- Backend runs middleware pipeline through `api/server/index.js` entry point
+- Client architecture: Each AI provider extends `BaseClient` class in `api/app/clients/`
+- Frontend uses Recoil for global state, React Query for server state
+- File uploads handled via Multer middleware with Sharp for image processing
+- Real-time communication via Server-Sent Events for streaming responses
+
+### Critical Build Dependencies
+**Package build order is strictly enforced**:
+1. `data-provider` (shared types and API calls)
+2. `data-schemas` (Zod schemas and MongoDB models)  
+3. `api` (MCP utilities and shared backend code)
+4. `client` (React frontend)
+
+Breaking this order will cause TypeScript compilation errors.
+
 ### Essential Environment Variables
 - `MONGODB_URI` - MongoDB connection string
 - `JWT_SECRET` - JWT token secret
@@ -124,7 +149,8 @@ nxsGPT is a full-stack AI chat platform that provides a unified interface for mu
 
 - **Backend**: Jest with MongoDB Memory Server for integration tests
 - **Frontend**: Jest + React Testing Library for unit tests
-- **E2E**: Playwright for full application testing
+- **E2E**: Playwright for full application testing across browsers (Chromium, Firefox, Safari)
+- **Accessibility**: Automated a11y testing with @axe-core/playwright for WCAG compliance
 - **Mocking**: Extensive mocks for AI providers and external services
 
 ## Key Integration Points
@@ -135,13 +161,12 @@ nxsGPT is a full-stack AI chat platform that provides a unified interface for mu
 - **Vector Search**: RAG API integration for document embedding and retrieval
 - **Model Context Protocol (MCP)**: Support for tool integration via MCP servers
 
-## Development Notes
+## MCP (Model Context Protocol) Integration
 
-- Backend runs on port 3080 by default
-- Frontend development server proxies API requests to backend  
-- Docker setup includes MongoDB, MeiliSearch, PostgreSQL, and RAG API services
-- Extensive environment variable configuration for different deployment scenarios
-- Built-in user management, role-based access control, and token spend tracking
+- **Python MCP Server**: `imap-mcp/` directory contains IMAP/SMTP email integration
+- **Package Integration**: `packages/api/src/mcp/` handles MCP connection management
+- **Connection Management**: MCP connections configured via `librechat.yaml`
+- **Tool Integration**: MCP servers provide tools for agents and assistants
 
 ### Alternative Runtime Support (Bun)
 
@@ -169,3 +194,5 @@ When running `npm run start:deployed`, the following services are started:
 - `.env` - Environment variables (not committed to repo)
 - `deploy-compose.yml` - Production Docker Compose configuration
 - `docker-compose.yml` - Development Docker Compose configuration
+- `api/jsconfig.json` - Backend path aliases (`~/*` for root imports)
+- `packages/*/package.json` - Individual package configurations for monorepo
