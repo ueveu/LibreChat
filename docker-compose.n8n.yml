@@ -46,7 +46,7 @@ services:
   api:
     environment:
       - N8N_URL=http://n8n-proxy:8080
-      - REACT_APP_N8N_URL=http://138.199.157.172:8080
+      - REACT_APP_N8N_URL=${REACT_APP_N8N_URL:-}
 
   # PostgreSQL for N8N
   postgres_n8n:

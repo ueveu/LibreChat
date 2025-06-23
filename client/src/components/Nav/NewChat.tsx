@@ -8,7 +8,7 @@ import { NewChatIcon, MobileSidebar, Sidebar } from '~/components/svg';
 import { getDefaultModelSpec, getModelSpecPreset } from '~/utils';
 import { TooltipAnchor, Button } from '~/components/ui';
 import { useLocalize, useNewConvo } from '~/hooks';
-import N8NButton from './N8NModal';
+import N8NButton from './N8NButton';
 import store from '~/store';
 
 export default function NewChat({

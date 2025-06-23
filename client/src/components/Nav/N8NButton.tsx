@@ -1,7 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { Button } from '~/components/ui';
 import { TooltipAnchor } from '~/components/ui';
 import { useLocalize } from '~/hooks';
+import { useN8NUrl, useN8NEnabled, useN8NStatus } from '~/hooks/useN8N';
 
 // N8N icon SVG component
 const N8NIcon = ({ className }: { className?: string }) => (
@@ -21,27 +22,43 @@ interface N8NButtonProps {
 
 const N8NButton: React.FC<N8NButtonProps> = ({ isSmallScreen }) => {
   const localize = useLocalize();
-  const [isN8NOpen, setIsN8NOpen] = useState(false);
+  const n8nUrl = useN8NUrl();
+  const n8nEnabled = useN8NEnabled();
+  const { data: status, isLoading: statusLoading } = useN8NStatus();
 
   const handleN8NClick = useCallback(() => {
-    // Open N8N in a new window/tab
-    const n8nUrl = process.env.REACT_APP_N8N_URL || 'http://localhost:5678';
-    window.open(n8nUrl, '_blank', 'noopener,noreferrer');
-  }, []);
+    // Open N8N in a new window/tab - much more reliable than iframe
+    const windowFeatures = isSmallScreen 
+      ? 'noopener,noreferrer' 
+      : 'width=1400,height=900,scrollbars=yes,resizable=yes,noopener,noreferrer';
+    
+    window.open(n8nUrl, '_blank', windowFeatures);
+  }, [n8nUrl, isSmallScreen]);
+
+  // Don't render if N8N is disabled
+  if (!n8nEnabled) {
+    return null;
+  }
 
   return (
     <TooltipAnchor
-      description="Open N8N Workflow Automation"
+      description={`Open N8N Workflow Automation ${status?.status === 'running' ? '(Online)' : '(Checking...)'}`}
       render={
         <Button
           size="icon"
           variant="outline"
           data-testid="n8n-button"
           aria-label="Open N8N Workflow Automation"
-          className="rounded-full border-none bg-transparent p-2 hover:bg-surface-hover md:rounded-xl"
+          className="rounded-full border-none bg-transparent p-2 hover:bg-surface-hover md:rounded-xl relative"
           onClick={handleN8NClick}
         >
           <N8NIcon className="icon-md md:h-6 md:w-6" />
+          {status?.status === 'running' && (
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
+          )}
+          {statusLoading && (
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-500 rounded-full border-2 border-white animate-pulse" />
+          )}
         </Button>
       }
     />

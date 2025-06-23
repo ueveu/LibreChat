@@ -46,8 +46,12 @@ router.get('/status', requireJwtAuth, async (req, res) => {
  */
 router.get('/config', requireJwtAuth, async (req, res) => {
   try {
+    // Use the external accessible URL based on request host
+    const externalHost = req.get('host')?.replace(':3080', '') || '138.199.157.172';
+    const defaultN8nUrl = `http://${externalHost}:8080`;
+    
     const config = {
-      n8nUrl: process.env.REACT_APP_N8N_URL || 'http://138.199.157.172:8080',
+      n8nUrl: process.env.REACT_APP_N8N_URL || defaultN8nUrl,
       enabled: true,
       features: {
         embedded: true,
