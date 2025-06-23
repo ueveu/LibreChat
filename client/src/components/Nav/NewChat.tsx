@@ -8,6 +8,7 @@ import { NewChatIcon, MobileSidebar, Sidebar } from '~/components/svg';
 import { getDefaultModelSpec, getModelSpecPreset } from '~/utils';
 import { TooltipAnchor, Button } from '~/components/ui';
 import { useLocalize, useNewConvo } from '~/hooks';
+import N8NModal from './N8NModal';
 import store from '~/store';
 
 export default function NewChat({
@@ -71,6 +72,7 @@ export default function NewChat({
         />
         <div className="flex">
           {headerButtons}
+          <N8NModal isSmallScreen={isSmallScreen} />
           <TooltipAnchor
             description={localize('com_ui_new_chat')}
             render={

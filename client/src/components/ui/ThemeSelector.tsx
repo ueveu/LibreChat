@@ -1,11 +1,10 @@
 import React from 'react';
-import { Sun } from 'lucide-react';
 
-// Simplified Theme component that only shows light theme
+// Simplified Theme component
 const Theme = () => {
   return (
     <div className="flex items-center gap-2 p-2">
-      <Sun />
+      {/* Sun icon removed as requested */}
     </div>
   );
 };

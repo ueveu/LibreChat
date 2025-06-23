@@ -74,7 +74,7 @@ function AuthLayout({
               {['login', 'register'].some((p) => pathname.includes(p)) && (
                 <div className="flex justify-center mb-6">
                   <img
-                    src="/home/marvin/LibreChat/client/dist/assets/logo.png"
+                    src="/assets/logo.png"
                     alt="NextStrategy AI Logo"
                     className="h-16 w-auto"
                     style={{ objectFit: 'contain' }}
