@@ -27,13 +27,9 @@ const N8NButton: React.FC<N8NButtonProps> = ({ isSmallScreen }) => {
   const { data: status, isLoading: statusLoading } = useN8NStatus();
 
   const handleN8NClick = useCallback(() => {
-    // Open N8N in a new window/tab - much more reliable than iframe
-    const windowFeatures = isSmallScreen 
-      ? 'noopener,noreferrer' 
-      : 'width=1400,height=900,scrollbars=yes,resizable=yes,noopener,noreferrer';
-    
-    window.open(n8nUrl, '_blank', windowFeatures);
-  }, [n8nUrl, isSmallScreen]);
+    // Open N8N in a regular new tab - cleaner than popup window
+    window.open(n8nUrl, '_blank', 'noopener,noreferrer');
+  }, [n8nUrl]);
 
   // Don't render if N8N is disabled
   if (!n8nEnabled) {

@@ -51,11 +51,39 @@ nxsGPT is a full-stack AI chat platform that provides a unified interface for mu
 - `cd imap-mcp && python -m imap_mcp.server` - Start email MCP server
 - Configuration: `imap-mcp/config.sample.yaml` (copy to `config.yaml` and configure)
 
-### N8N Integration (Workflow Automation)
+### N8N Integration (Workflow Automation) - WORKING SETUP
+**Proven Working Method** (Use this approach):
+
+1. **Start LibreChat first**:
+   ```bash
+   npm run start:deployed
+   ```
+
+2. **Add N8N separately**:
+   ```bash
+   docker run -d --name n8n-simple -p 8080:5678 \
+     -e N8N_HOST=0.0.0.0 \
+     -e N8N_PORT=5678 \
+     -e N8N_PROTOCOL=http \
+     -e N8N_IFRAME_DENY=false \
+     -e N8N_CORS_ORIGIN=* \
+     --restart unless-stopped \
+     n8nio/n8n:latest
+   ```
+
+3. **Access Points**:
+   - **LibreChat**: http://138.199.157.172:3080
+   - **N8N Workflows**: http://138.199.157.172:8080
+
+**Critical Configuration Notes**:
+- **MongoDB Password**: Use `example` (not `mongoSecurePassword123`)
+- **API Keys**: Must comment out all invalid API keys in `.env` to prevent crashes
+- **Environment**: Set `ENDPOINTS=custom` to only use Ollama
+- **MCP Servers**: Disable Perplexity MCP in `librechat.yaml` (causes crashes with invalid key)
+
+**Legacy Commands** (may have nginx config issues):
 - `./start-with-n8n.sh` - Start LibreChat with full N8N stack
 - `./fix-n8n-url.sh` - Fix N8N URL configuration for external access
-- **Access**: N8N button in LibreChat UI opens workflow automation interface
-- **Services**: Includes N8N, PostgreSQL, Ollama, Qdrant vector DB
 
 ## Architecture
 
