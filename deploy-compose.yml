@@ -19,7 +19,7 @@ services:
     environment:
       - HOST=0.0.0.0
       - NODE_ENV=production
-      - MONGO_URI=mongodb://mongodb:27017/nxsGPT
+      - MONGO_URI=mongodb://root:${MONGO_ROOT_PASSWORD:-mongoSecurePassword123}@mongodb:27017/nxsGPT?authSource=admin
       - MEILI_HOST=http://meilisearch:7700
       - RAG_PORT=${RAG_PORT:-8000}
       - RAG_API_URL=http://rag_api:${RAG_PORT:-8000}
@@ -49,9 +49,13 @@ services:
     #   - 27018:27017
     image: mongo
     restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-mongoSecurePassword123}
+      MONGO_INITDB_DATABASE: nxsGPT
     volumes:
       - ./data-node:/data/db
-    command: mongod --noauth
+    command: mongod --auth
   meilisearch:
     container_name: nxsgpt-meilisearch
     image: getmeili/meilisearch:v1.12.3

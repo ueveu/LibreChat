@@ -16,18 +16,14 @@ services:
     restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    env_file:
+      - .env
     environment:
       - HOST=0.0.0.0
       - MONGO_URI=mongodb://root:example@mongodb:27017/nxsGPT?authSource=admin
       - MEILI_HOST=http://meilisearch:7700
       - RAG_PORT=${RAG_PORT:-8000}
       - RAG_API_URL=http://rag_api:${RAG_PORT:-8000}
-      - CREDS_KEY=95f282342483eccef8321275a964c0a33b97759ec203ee1e5626739b4c52110d
-      - CREDS_IV=af22a05a32d579d0529055314974c935
-      - JWT_SECRET=443d49959580fd2380a77398581c00c1519e0f0472bd92ccaa785360f1e16c76
-      - JWT_REFRESH_SECRET=eaa5191f2914e30b9387fd84e254e4ba6fc51b4654968a9b0803b456a54b8418
-      - ALLOW_REGISTRATION=true
-      - ALLOW_EMAIL_LOGIN=true
       - LOG_DIR=/app/logs
     volumes:
       - ./logs:/app/logs
