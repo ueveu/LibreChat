@@ -7,7 +7,7 @@ services:
     cpus: 1.0
     # Enhanced health check for container monitoring
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3080/", "||", "exit", "1"]
+      test: ["CMD", "curl", "-f", "http://localhost:3080/"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -56,7 +56,7 @@ services:
     cpus: 0.75
     # Enhanced health check
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:7700/health", "||", "exit", "1"]
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -100,9 +100,9 @@ services:
     # Resource limits for RAG API
     mem_limit: 1G
     cpus: 0.5
-    # Enhanced health check
+    # Enhanced health check  
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8000/docs", "||", "exit", "1"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -128,18 +128,15 @@ services:
       - ./backups:/backups
       - datanode:/data/db:ro
     environment:
-      - MONGO_URI=mongodb://root:${MONGO_ROOT_PASSWORD:-mongoSecurePassword123}@mongodb:27017/nxsGPT?authSource=admin
+      - MONGO_URI=mongodb://root:example@mongodb:27017/nxsGPT?authSource=admin
     command:
       - sh
       - -c
       - |
         echo 'Starting MongoDB backup service...'
-        echo 'Waiting for MongoDB to be ready...'
-        until mongosh --eval "db.adminCommand('ping')" "$$MONGO_URI" --quiet; do
-          echo 'MongoDB not ready, waiting...'
-          sleep 5
-        done
-        echo 'MongoDB is ready, starting backup loop...'
+        echo 'Waiting 60 seconds for MongoDB to be ready...'
+        sleep 60
+        echo 'Starting backup loop...'
         while true; do
           echo "Creating backup at $$(date)"
           mongodump --uri="$$MONGO_URI" --out /backups/$$(date +%Y%m%d_%H%M%S)
