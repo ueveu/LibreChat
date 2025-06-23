@@ -1,0 +1,118 @@
+services:
+  api:
+    # Resource limits for production stability (Docker Swarm syntax)
+    # For Docker Compose use: mem_limit and cpus instead
+    mem_limit: 2G
+    cpus: 1.0
+    # Health check for container monitoring
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    # Security improvements
+    security_opt:
+      - no-new-privileges:true
+    read_only: false
+    tmpfs:
+      - /tmp
+    # Enhanced logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  mongodb:
+    # Resource limits for MongoDB
+    mem_limit: 1G
+    cpus: 0.5
+    # Health check for MongoDB
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    # Security improvements
+    security_opt:
+      - no-new-privileges:true
+    # Enhanced logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  meilisearch:
+    # Resource limits for MeiliSearch
+    mem_limit: 512M
+    cpus: 0.5
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    # Security improvements
+    security_opt:
+      - no-new-privileges:true
+    # Enhanced logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  vectordb:
+    # Resource limits for PostgreSQL/pgvector
+    mem_limit: 512M
+    cpus: 0.5
+    # Health check for PostgreSQL
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d mydatabase"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    # Security improvements
+    security_opt:
+      - no-new-privileges:true
+    # Enhanced logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  rag_api:
+    # Resource limits for RAG API
+    mem_limit: 1G
+    cpus: 0.5
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    # Security improvements
+    security_opt:
+      - no-new-privileges:true
+    # Enhanced logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# Network security configuration
+networks:
+  default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
