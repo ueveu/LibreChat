@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test N8N Iframe Embedding</title>
+    <style>
+        body { margin: 0; padding: 20px; font-family: Arial, sans-serif; }
+        iframe { border: 1px solid #ccc; border-radius: 8px; }
+        .test-container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #333; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>N8N Integration Test</h1>
+        <div id="status" class="status">Loading...</div>
+        
+        <iframe 
+            src="http://138.199.157.172:8080" 
+            width="100%" 
+            height="600px"
+            title="N8N Workflow Automation"
+            onload="onIframeLoad()"
+            onerror="onIframeError()">
+        </iframe>
+    </div>
+
+    <script>
+        function onIframeLoad() {
+            document.getElementById('status').className = 'status success';
+            document.getElementById('status').textContent = '✅ N8N iframe loaded successfully! Integration is working.';
+        }
+        
+        function onIframeError() {
+            document.getElementById('status').className = 'status error';
+            document.getElementById('status').textContent = '❌ Failed to load N8N iframe. Check the console for errors.';
+        }
+        
+        // Timeout check
+        setTimeout(() => {
+            const status = document.getElementById('status');
+            if (status.textContent === 'Loading...') {
+                status.className = 'status error';
+                status.textContent = '⚠️ N8N iframe took too long to load. Check if service is running.';
+            }
+        }, 10000);
+    </script>
+</body>
+</html>

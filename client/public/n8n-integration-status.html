@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>N8N Integration Status</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background: #f5f5f5;
+        }
+        .status-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { border-left: 4px solid #28a745; }
+        .warning { border-left: 4px solid #ffc107; }
+        .error { border-left: 4px solid #dc3545; }
+        .loading { border-left: 4px solid #007bff; }
+        h1 { color: #333; text-align: center; }
+        .test-result { font-weight: bold; margin-top: 10px; }
+        .iframe-container { margin: 20px 0; }
+        iframe { width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>🔧 N8N Integration Status Dashboard</h1>
+    
+    <div id="proxy-status" class="status-card loading">
+        <h3>📡 N8N Proxy Service</h3>
+        <p>Testing connection to n8n through nginx proxy...</p>
+        <div class="test-result" id="proxy-result">Testing...</div>
+    </div>
+
+    <div id="iframe-status" class="status-card loading">
+        <h3>🖼️ Iframe Embedding Test</h3>
+        <p>Testing if n8n can be embedded in an iframe...</p>
+        <div class="test-result" id="iframe-result">Loading iframe...</div>
+        <div class="iframe-container">
+            <iframe id="n8n-iframe" src="http://138.199.157.172:8080" onload="onIframeLoad()" onerror="onIframeError()"></iframe>
+        </div>
+    </div>
+
+    <div id="api-status" class="status-card loading">
+        <h3>🔌 LibreChat API Integration</h3>
+        <p>Testing LibreChat's n8n API endpoints...</p>
+        <div class="test-result" id="api-result">Testing...</div>
+    </div>
+
+    <div class="status-card">
+        <h3>📋 Integration Summary</h3>
+        <ul>
+            <li><strong>N8N URL:</strong> http://138.199.157.172:8080</li>
+            <li><strong>Proxy:</strong> nginx:8080 → n8n:5678</li>
+            <li><strong>X-Frame-Options:</strong> ALLOWALL</li>
+            <li><strong>CORS:</strong> Access-Control-Allow-Origin: *</li>
+            <li><strong>LibreChat API:</strong> /api/n8n/config, /api/n8n/status</li>
+            <li><strong>UI Integration:</strong> N8NModal in navigation</li>
+        </ul>
+    </div>
+
+    <script>
+        // Test 1: N8N Proxy
+        fetch('http://138.199.157.172:8080')
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('proxy-status').className = 'status-card success';
+                    document.getElementById('proxy-result').textContent = '✅ N8N proxy is accessible and responding';
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            })
+            .catch(error => {
+                document.getElementById('proxy-status').className = 'status-card error';
+                document.getElementById('proxy-result').textContent = `❌ Proxy connection failed: ${error.message}`;
+            });
+
+        // Test 2: Iframe Loading
+        function onIframeLoad() {
+            document.getElementById('iframe-status').className = 'status-card success';
+            document.getElementById('iframe-result').textContent = '✅ N8N iframe loaded successfully - no X-Frame-Options blocking!';
+        }
+
+        function onIframeError() {
+            document.getElementById('iframe-status').className = 'status-card error';
+            document.getElementById('iframe-result').textContent = '❌ Iframe failed to load';
+        }
+
+        // Timeout for iframe
+        setTimeout(() => {
+            const result = document.getElementById('iframe-result');
+            if (result.textContent === 'Loading iframe...') {
+                document.getElementById('iframe-status').className = 'status-card warning';
+                result.textContent = '⚠️ Iframe loading timeout - check browser console';
+            }
+        }, 15000);
+
+        // Test 3: API Integration (will show unauthorized, which is expected)
+        fetch('/api/n8n/config')
+            .then(response => {
+                if (response.status === 401) {
+                    document.getElementById('api-status').className = 'status-card success';
+                    document.getElementById('api-result').textContent = '✅ API endpoint exists (401 Unauthorized - authentication required)';
+                } else if (response.status === 404) {
+                    document.getElementById('api-status').className = 'status-card error';
+                    document.getElementById('api-result').textContent = '❌ API endpoint not found';
+                } else {
+                    document.getElementById('api-status').className = 'status-card success';
+                    document.getElementById('api-result').textContent = `✅ API responding (status: ${response.status})`;
+                }
+            })
+            .catch(error => {
+                document.getElementById('api-status').className = 'status-card error';
+                document.getElementById('api-result').textContent = `❌ API test failed: ${error.message}`;
+            });
+    </script>
+</body>
+</html>

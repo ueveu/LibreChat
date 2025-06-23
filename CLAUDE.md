@@ -9,15 +9,17 @@ nxsGPT is a full-stack AI chat platform that provides a unified interface for mu
 ## Key Commands
 
 ### Development
-- `npm run backend:dev` - Start API server in development mode
-- `npm run frontend:dev` - Start client development server
+- `npm run backend:dev` - Start API server in development mode (port 3080)
+- `npm run frontend:dev` - Start client development server (Vite HMR)
 - `npm run build:data-provider && npm run build:data-schemas && npm run build:api` - Build shared packages before frontend
 
 ### Testing
-- `npm run test:api` - Run backend tests
-- `npm run test:client` - Run frontend tests  
-- `npm run e2e` - Run end-to-end tests (requires local config)
+- `npm run test:api` - Run backend tests (Jest + MongoDB Memory Server)
+- `npm run test:client` - Run frontend tests (Jest + React Testing Library)
+- `npm run e2e` - Run end-to-end tests (Playwright, requires local config)
 - `npm run e2e:headed` - Run E2E tests with browser UI
+- `npm run e2e:debug` - Debug E2E tests with PWDEBUG
+- `npm run e2e:codegen` - Generate E2E test code with Playwright
 
 ### Linting & Formatting
 - `npm run lint` - Lint all TypeScript/JavaScript files
@@ -25,26 +27,41 @@ nxsGPT is a full-stack AI chat platform that provides a unified interface for mu
 - `npm run format` - Format code with Prettier
 
 ### Docker & Deployment
-- `npm run start:deployed` - Start with Docker Compose
+- `npm run start:deployed` - Start with Docker Compose (deploy-compose.yml)
 - `npm run stop:deployed` - Stop Docker containers
 - `npm run update:deployed` - Update deployed instance
+- `npm run rebase:deployed` - Update deployed instance with rebase
 
 ### User Management (Production)
 - `npm run create-user` - Create new user account
 - `npm run list-users` - List all users
 - `npm run ban-user` - Ban a user account
+- `npm run delete-user` - Delete a user account
 - `npm run add-balance` - Add credits to user account
+- `npm run set-balance` - Set user balance
+- `npm run list-balances` - List user balances
+- `npm run user-stats` - View user statistics
+
+### Email MCP Server (Python)
+- `cd imap-mcp && pip install -e .` - Install email MCP server in development mode
+- `cd imap-mcp && python -m pytest` - Run email MCP server tests
+- `cd imap-mcp && python -m imap_mcp.server` - Start email MCP server
+- Configuration: `imap-mcp/config.sample.yaml` (copy to `config.yaml` and configure)
 
 ## Architecture
 
 ### Monorepo Structure
 ```
-/api/                    # Node.js/Express backend
-/client/                 # React/Vite frontend  
+/api/                    # Node.js/Express backend (@nxsgpt/backend)
+/client/                 # React/Vite frontend (@nxsgpt/frontend)
 /packages/
-  /data-provider/        # Shared data fetching logic
-  /data-schemas/         # Zod schemas and MongoDB models
-  /api/                  # Shared API utilities (MCP, flows, etc.)
+  /data-provider/        # Shared data fetching logic (librechat-data-provider)
+  /data-schemas/         # Zod schemas and MongoDB models (@librechat/data-schemas)
+  /api/                  # Shared API utilities (MCP, flows, etc.) (@librechat/api)
+/imap-mcp/              # Python email MCP server with IMAP/SMTP support
+/config/                # Administrative scripts and configuration utilities
+/e2e/                   # End-to-end tests (Playwright)
+/shared/                # Shared resources across services
 ```
 
 ### Backend (`/api/`)
@@ -89,10 +106,19 @@ nxsGPT is a full-stack AI chat platform that provides a unified interface for mu
 ## Development Workflow
 
 1. **Package Management**: Uses npm workspaces - install dependencies at root level
-2. **Module Resolution**: Backend uses `~` alias for root-relative imports
+2. **Module Resolution**: Backend uses `~` alias for root-relative imports (`~/*`)
 3. **Build Order**: Must build shared packages before frontend: `data-provider` → `data-schemas` → `api` → `client`
 4. **Hot Reload**: Backend uses nodemon, frontend uses Vite HMR
-5. **Environment Setup**: Copy environment variables, configure AI provider keys
+5. **Environment Setup**: Copy `.env.example` to `.env`, configure AI provider keys
+6. **Database**: MongoDB (primary), Redis (sessions), PostgreSQL+pgvector (RAG)
+7. **Ports**: Backend (3080), Frontend dev server (3090), MeiliSearch (7700)
+
+### Essential Environment Variables
+- `MONGODB_URI` - MongoDB connection string
+- `JWT_SECRET` - JWT token secret
+- AI Provider Keys: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`, etc.
+- `MEILI_HOST`, `MEILI_HTTP_ADDR` - MeiliSearch configuration
+- `RAG_API_URL` - RAG API endpoint for vector search
 
 ## Testing Strategy
 
@@ -112,7 +138,34 @@ nxsGPT is a full-stack AI chat platform that provides a unified interface for mu
 ## Development Notes
 
 - Backend runs on port 3080 by default
-- Frontend development server proxies API requests to backend
+- Frontend development server proxies API requests to backend  
 - Docker setup includes MongoDB, MeiliSearch, PostgreSQL, and RAG API services
 - Extensive environment variable configuration for different deployment scenarios
 - Built-in user management, role-based access control, and token spend tracking
+
+### Alternative Runtime Support (Bun)
+
+The project supports Bun as an alternative to Node.js:
+
+- `npm run b:api:dev` - Backend development with Bun
+- `npm run b:client:dev` - Frontend development with Bun
+- `npm run b:test:api` - Backend tests with Bun  
+- `npm run b:test:client` - Frontend tests with Bun
+- `npm run b:build` - Production build with Bun
+
+### Docker Services
+
+When running `npm run start:deployed`, the following services are started:
+
+- **nxsGPT API**: Main application server
+- **MongoDB**: Primary database
+- **MeiliSearch**: Search and indexing
+- **PostgreSQL + pgvector**: Vector database for RAG
+- **RAG API**: Document embedding and retrieval service
+
+### Important File Locations
+
+- `librechat.yaml` - Main application configuration
+- `.env` - Environment variables (not committed to repo)
+- `deploy-compose.yml` - Production Docker Compose configuration
+- `docker-compose.yml` - Development Docker Compose configuration

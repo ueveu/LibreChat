@@ -12,7 +12,7 @@ const router = express.Router();
  */
 router.get('/status', requireJwtAuth, async (req, res) => {
   try {
-    const n8nUrl = process.env.N8N_URL || 'http://n8n:5678';
+    const n8nUrl = process.env.N8N_URL || 'http://n8n-proxy:8080';
     
     // Simple health check - could be enhanced with actual N8N API call
     const response = {
@@ -47,7 +47,7 @@ router.get('/status', requireJwtAuth, async (req, res) => {
 router.get('/config', requireJwtAuth, async (req, res) => {
   try {
     const config = {
-      n8nUrl: process.env.N8N_URL || 'http://localhost:5678',
+      n8nUrl: process.env.REACT_APP_N8N_URL || 'http://138.199.157.172:8080',
       enabled: true,
       features: {
         embedded: true,

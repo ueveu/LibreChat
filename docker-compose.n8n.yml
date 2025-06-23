@@ -26,6 +26,10 @@ x-n8n: &service-n8n
     - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_JWT_SECRET:-myJwtSecret}
     - OLLAMA_HOST=ollama:11434
     - N8N_SECURE_COOKIE=false
+    - N8N_SAMESITE_COOKIE=none
+    - N8N_IFRAME_DENY=false
+    - N8N_CORS_ORIGIN=*
+    - N8N_IFRAME_ALLOWED_ORIGINS=http://138.199.157.172:3090,http://localhost:3090,http://138.199.157.172:3080,http://localhost:3080
 
 x-ollama: &service-ollama
   image: ollama/ollama:latest
@@ -41,8 +45,8 @@ services:
   # Extend the API service to expose N8N URL as environment variable
   api:
     environment:
-      - N8N_URL=http://n8n:5678
-      - REACT_APP_N8N_URL=http://localhost:5678
+      - N8N_URL=http://n8n-proxy:8080
+      - REACT_APP_N8N_URL=http://138.199.157.172:8080
 
   # PostgreSQL for N8N
   postgres_n8n:
@@ -84,8 +88,22 @@ services:
     hostname: n8n
     container_name: n8n
     restart: unless-stopped
-    ports:
-      - "5678:5678"
+    environment:
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - N8N_WEBHOOK_URL=http://138.199.157.172:8080/
+      - N8N_SECURE_COOKIE=false
+      - N8N_SAMESITE_COOKIE=none
+      - N8N_SECURITY_AUDIT_DAYS=0
+      - N8N_DISABLE_UI=false
+      - N8N_IFRAME_DENY=false
+      - N8N_CORS_ORIGIN=*
+      - N8N_IFRAME_ALLOWED_ORIGINS=http://138.199.157.172:3090,http://localhost:3090,http://138.199.157.172:3080,http://localhost:3080
+      - RESPONSE_MODE=RESPONSE_NEVER_SET_COOKIES
+      - N8N_ENDPOINT_REST=rest
+      - N8N_ENDPOINT_WEBHOOK=webhook
+      - N8N_METRICS=false
     volumes:
       - n8n_storage:/home/node/.n8n
       - ./n8n/demo-data:/demo-data
@@ -95,6 +113,19 @@ services:
         condition: service_healthy
       n8n-import:
         condition: service_completed_successfully
+
+  # Nginx proxy for n8n to handle iframe headers
+  n8n-proxy:
+    image: nginx:alpine
+    container_name: n8n-proxy
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./n8n/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks: ['default', 'n8n_network']
+    depends_on:
+      - n8n
 
   # Qdrant Vector Database
   qdrant:
@@ -125,11 +156,11 @@ services:
               count: 1
               capabilities: [gpu]
 
-  # Initialize Ollama with Llama model
+  # Initialize Ollama with Mistral model
   ollama-init:
     image: ollama/ollama:latest
     networks: ['n8n_network']
-    container_name: ollama-pull-llama
+    container_name: ollama-pull-mistral
     volumes:
       - ollama_storage:/root/.ollama
     entrypoint: /bin/sh
@@ -137,7 +168,7 @@ services:
       - OLLAMA_HOST=ollama:11434
     command:
       - "-c"  
-      - "sleep 10; ollama pull llama3.2"
+      - "sleep 10; ollama pull mistral:latest"
     profiles: ["n8n-cpu"]
     depends_on:
       - ollama

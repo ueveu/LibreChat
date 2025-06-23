@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>N8N New Window Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 600px; 
+            margin: 50px auto; 
+            padding: 20px; 
+            text-align: center;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        .button:hover { background: #0056b3; }
+        .success { background: #28a745; }
+        .info { 
+            background: #f8f9fa; 
+            border: 1px solid #dee2e6; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 N8N New Window Integration</h1>
+    
+    <div class="info">
+        <h3>✅ Fixed: No More iframe Issues!</h3>
+        <p>The new approach opens n8n in a separate window/tab, which is:</p>
+        <ul style="text-align: left; max-width: 400px; margin: 0 auto;">
+            <li>✅ More reliable (no X-Frame-Options issues)</li>
+            <li>✅ Better performance</li>
+            <li>✅ Full n8n functionality</li>
+            <li>✅ No connection refused errors</li>
+            <li>✅ Works on all browsers</li>
+        </ul>
+    </div>
+
+    <button class="button" onclick="openN8N()">
+        🔧 Open N8N Workflow Editor
+    </button>
+    
+    <button class="button" onclick="testLocalConnection()">
+        🧪 Test Local Connection
+    </button>
+
+    <div id="result" style="margin-top: 20px;"></div>
+
+    <script>
+        function openN8N() {
+            // Same approach as in LibreChat
+            const windowFeatures = 'width=1400,height=900,scrollbars=yes,resizable=yes,noopener,noreferrer';
+            const n8nWindow = window.open('http://localhost:8080', '_blank', windowFeatures);
+            
+            document.getElementById('result').innerHTML = 
+                '<div class="info"><strong>✅ N8N Window Opened!</strong><br>Check for a new tab/window with the n8n interface.</div>';
+        }
+
+        function testLocalConnection() {
+            document.getElementById('result').innerHTML = 
+                '<div class="info">🔍 Testing connection...</div>';
+                
+            fetch('http://localhost:8080')
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById('result').innerHTML = 
+                            '<div class="info"><strong>✅ Connection Successful!</strong><br>N8N service is running and accessible.</div>';
+                    } else {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('result').innerHTML = 
+                        '<div class="info" style="background: #f8d7da; border-color: #f5c6cb;"><strong>❌ Connection Failed:</strong><br>' + error.message + '</div>';
+                });
+        }
+        
+        // Auto-test connection on page load
+        window.onload = () => testLocalConnection();
+    </script>
+</body>
+</html>

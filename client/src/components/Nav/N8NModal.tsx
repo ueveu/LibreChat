@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '~/components/ui';
+import React, { useCallback } from 'react';
 import { Button } from '~/components/ui';
 import { TooltipAnchor } from '~/components/ui';
 import { useLocalize } from '~/hooks';
@@ -17,20 +16,24 @@ const N8NIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-interface N8NModalProps {
+interface N8NButtonProps {
   isSmallScreen?: boolean;
 }
 
-const N8NModal: React.FC<N8NModalProps> = ({ isSmallScreen }) => {
+const N8NButton: React.FC<N8NButtonProps> = ({ isSmallScreen }) => {
   const localize = useLocalize();
-  const [isOpen, setIsOpen] = useState(false);
   const n8nUrl = useN8NUrl();
   const n8nEnabled = useN8NEnabled();
   const { data: status, isLoading: statusLoading } = useN8NStatus();
 
-  const handleOpenChange = (open: boolean) => {
-    setIsOpen(open);
-  };
+  const handleN8NClick = useCallback(() => {
+    // Open N8N in a new window/tab - much more reliable than iframe
+    const windowFeatures = isSmallScreen 
+      ? 'noopener,noreferrer' 
+      : 'width=1400,height=900,scrollbars=yes,resizable=yes,noopener,noreferrer';
+    
+    window.open(n8nUrl, '_blank', windowFeatures);
+  }, [n8nUrl, isSmallScreen]);
 
   // Don't render if N8N is disabled
   if (!n8nEnabled) {
@@ -38,48 +41,28 @@ const N8NModal: React.FC<N8NModalProps> = ({ isSmallScreen }) => {
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <TooltipAnchor
-          description={`N8N Workflow Automation ${status?.status === 'running' ? '(Online)' : '(Checking...)'}`}
-          render={
-            <Button
-              size="icon"
-              variant="outline"
-              data-testid="n8n-modal-button"
-              aria-label="Open N8N Workflow Automation"
-              className="rounded-full border-none bg-transparent p-2 hover:bg-surface-hover md:rounded-xl relative"
-            >
-              <N8NIcon className="icon-md md:h-6 md:w-6" />
-              {status?.status === 'running' && (
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
-              )}
-              {statusLoading && (
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-500 rounded-full border-2 border-white animate-pulse" />
-              )}
-            </Button>
-          }
-        />
-      </DialogTrigger>
-      <DialogContent className="max-w-[95vw] max-h-[95vh] w-full h-full p-0">
-        <DialogHeader className="p-4 pb-2">
-          <DialogTitle className="flex items-center gap-2">
-            <N8NIcon className="h-5 w-5" />
-            N8N Workflow Automation
-          </DialogTitle>
-        </DialogHeader>
-        <div className="flex-1 p-4 pt-0">
-          <iframe
-            src={n8nUrl}
-            className="w-full h-[80vh] border rounded-lg"
-            title="N8N Workflow Automation"
-            allow="fullscreen"
-            style={{ minHeight: '600px' }}
-          />
-        </div>
-      </DialogContent>
-    </Dialog>
+    <TooltipAnchor
+      description={`Open N8N Workflow Automation ${status?.status === 'running' ? '(Online)' : '(Checking...)'}`}
+      render={
+        <Button
+          size="icon"
+          variant="outline"
+          data-testid="n8n-button"
+          aria-label="Open N8N Workflow Automation"
+          className="rounded-full border-none bg-transparent p-2 hover:bg-surface-hover md:rounded-xl relative"
+          onClick={handleN8NClick}
+        >
+          <N8NIcon className="icon-md md:h-6 md:w-6" />
+          {status?.status === 'running' && (
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
+          )}
+          {statusLoading && (
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-500 rounded-full border-2 border-white animate-pulse" />
+          )}
+        </Button>
+      }
+    />
   );
 };
 
-export default N8NModal;
+export default N8NButton;
