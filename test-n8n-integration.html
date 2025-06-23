@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N8N Integration Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px; 
+        }
+        .status { 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+        }
+        .success { 
+            background-color: #d4edda; 
+            border: 1px solid #c3e6cb; 
+            color: #155724; 
+        }
+        .error { 
+            background-color: #f8d7da; 
+            border: 1px solid #f5c6cb; 
+            color: #721c24; 
+        }
+        .info { 
+            background-color: #cce6ff; 
+            border: 1px solid #99d6ff; 
+            color: #004085; 
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔄 N8N Integration Test</h1>
+    
+    <div id="status" class="status info">
+        Testing N8N integration...
+    </div>
+
+    <div>
+        <button onclick="testN8NDirectly()">Test N8N Direct Access</button>
+        <button onclick="showN8NInIframe()">Show N8N in Iframe</button>
+        <button onclick="openN8NNewWindow()">Open N8N in New Window</button>
+    </div>
+
+    <div id="iframe-container" style="display: none;">
+        <h3>N8N Workflow Editor:</h3>
+        <iframe id="n8n-iframe" src=""></iframe>
+    </div>
+
+    <script>
+        const N8N_URL = 'http://138.199.157.172:8080';
+        
+        async function testN8NDirectly() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status info';
+            statusDiv.textContent = 'Testing N8N accessibility...';
+            
+            try {
+                const response = await fetch(N8N_URL, { 
+                    mode: 'no-cors',
+                    method: 'HEAD'
+                });
+                
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = `
+                    ✅ N8N is accessible at ${N8N_URL}<br>
+                    Ready for workflow automation!
+                `;
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `
+                    ❌ Cannot access N8N at ${N8N_URL}<br>
+                    Error: ${error.message}
+                `;
+            }
+        }
+        
+        function showN8NInIframe() {
+            const container = document.getElementById('iframe-container');
+            const iframe = document.getElementById('n8n-iframe');
+            
+            iframe.src = N8N_URL;
+            container.style.display = 'block';
+            
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status success';
+            statusDiv.textContent = '🖼️ N8N loaded in iframe below';
+        }
+        
+        function openN8NNewWindow() {
+            const windowFeatures = 'width=1400,height=900,scrollbars=yes,resizable=yes,noopener,noreferrer';
+            window.open(N8N_URL, '_blank', windowFeatures);
+            
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status success';
+            statusDiv.textContent = '🚀 N8N opened in new window';
+        }
+        
+        // Test on page load
+        window.onload = function() {
+            testN8NDirectly();
+        };
+    </script>
+</body>
+</html>

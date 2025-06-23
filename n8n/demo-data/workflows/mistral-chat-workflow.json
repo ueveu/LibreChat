@@ -1,0 +1,105 @@
+{
+  "name": "Mistral AI Chat Workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "start-node",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://ollama:11434/api/generate",
+        "options": {
+          "timeout": 60000
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"model\": \"mistral:latest\",\n  \"prompt\": \"{{ $json.prompt || 'Hello, how can I help you today?' }}\",\n  \"stream\": false\n}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        }
+      },
+      "id": "ollama-mistral",
+      "name": "Ollama Mistral AI",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process Mistral AI response\nconst response = $input.first();\n\nif (response.json && response.json.response) {\n  return {\n    success: true,\n    prompt: response.json.prompt || 'No prompt provided',\n    aiResponse: response.json.response,\n    model: response.json.model || 'mistral:latest',\n    timestamp: new Date().toISOString(),\n    done: response.json.done\n  };\n} else {\n  return {\n    success: false,\n    error: 'No response from Mistral AI',\n    rawResponse: response.json\n  };\n}"
+      },
+      "id": "process-response",
+      "name": "Process AI Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Ollama Mistral AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Mistral AI": {
+      "main": [
+        [
+          {
+            "node": "Process AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "nxsgpt-n8n"
+  },
+  "id": "mistral-chat-workflow",
+  "tags": [
+    {
+      "createdAt": "2025-06-23T06:15:00.000Z",
+      "updatedAt": "2025-06-23T06:15:00.000Z",
+      "id": "mistral-ai",
+      "name": "Mistral AI"
+    },
+    {
+      "createdAt": "2025-06-23T06:15:00.000Z", 
+      "updatedAt": "2025-06-23T06:15:00.000Z",
+      "id": "ollama",
+      "name": "Ollama"
+    }
+  ]
+}

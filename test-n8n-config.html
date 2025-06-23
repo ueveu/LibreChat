@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N8N Config Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .result { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        button { background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px 5px; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>🔧 N8N Configuration Test</h1>
+    <p>This page tests if the N8N button in LibreChat will work correctly.</p>
+    
+    <button onclick="testN8NConfig()">Test N8N Config</button>
+    <button onclick="testN8NDirect()">Test N8N Direct</button>
+    
+    <div id="results"></div>
+
+    <script>
+        async function testN8NConfig() {
+            const resultsDiv = document.getElementById('results');
+            
+            try {
+                const response = await fetch('/api/n8n/config', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Note: In real usage, this would need proper authentication
+                    }
+                });
+                
+                if (response.status === 401) {
+                    resultsDiv.innerHTML = `
+                        <div class="result success">
+                            ✅ N8N Config Endpoint Available (Authentication required - this is correct)
+                        </div>
+                    `;
+                } else if (response.ok) {
+                    const config = await response.json();
+                    resultsDiv.innerHTML = `
+                        <div class="result success">
+                            ✅ N8N Config Retrieved Successfully!<br>
+                            <strong>URL:</strong> ${config.n8nUrl}<br>
+                            <strong>Enabled:</strong> ${config.enabled}
+                        </div>
+                    `;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="result error">
+                        ❌ Error testing N8N config: ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        async function testN8NDirect() {
+            const resultsDiv = document.getElementById('results');
+            const n8nUrl = 'http://138.199.157.172:8080';
+            
+            try {
+                // Test if N8N is accessible (using no-cors mode for cross-origin)
+                const response = await fetch(n8nUrl, { 
+                    mode: 'no-cors',
+                    method: 'HEAD'
+                });
+                
+                resultsDiv.innerHTML = `
+                    <div class="result success">
+                        ✅ N8N Direct Access Working!<br>
+                        <strong>URL:</strong> ${n8nUrl}<br>
+                        <strong>Status:</strong> Accessible<br>
+                        <a href="${n8nUrl}" target="_blank">→ Open N8N in New Tab</a>
+                    </div>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="result error">
+                        ❌ N8N Direct Access Failed: ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            testN8NDirect();
+        };
+    </script>
+</body>
+</html>
