@@ -21,7 +21,6 @@ const {
   loginLimiter,
   requireJwtAuth,
   checkInviteUser,
-  registerLimiter,
   requireLdapAuth,
   setBalanceConfig,
   requireLocalAuth,
@@ -47,7 +46,6 @@ router.post(
 router.post('/refresh', refreshController);
 router.post(
   '/register',
-  registerLimiter,
   checkBan,
   checkInviteUser,
   validateRegistration,
