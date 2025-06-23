@@ -1,0 +1,124 @@
+{
+  "timestamp": "2025-06-23T12:04:01.618Z",
+  "tests": [
+    {
+      "name": "Basic Load Test",
+      "status": "PASSED",
+      "duration": 835,
+      "result": {
+        "url": "http://localhost:3080",
+        "status": 200,
+        "statusOk": true,
+        "title": "nxsGPT",
+        "loadTime": 337,
+        "screenshot": "basic-load.png"
+      }
+    },
+    {
+      "name": "UI Elements Test",
+      "status": "PASSED",
+      "duration": 2779,
+      "result": {
+        "hasLogo": true,
+        "hasBranding": false,
+        "hasEmailInput": true,
+        "hasPasswordInput": true,
+        "hasLoginButton": true,
+        "hasNavigation": false,
+        "buttonCount": 1,
+        "linkCount": 1,
+        "inputCount": 2,
+        "screenshot": "ui-elements.png"
+      }
+    },
+    {
+      "name": "Responsive Design Test",
+      "status": "PASSED",
+      "duration": 4241,
+      "result": {
+        "desktop": {
+          "viewport": {
+            "name": "desktop",
+            "width": 1920,
+            "height": 1080
+          },
+          "visibility": {
+            "loginForm": true,
+            "navigation": false,
+            "mainContent": false
+          },
+          "screenshot": "responsive-desktop.png"
+        },
+        "tablet": {
+          "viewport": {
+            "name": "tablet",
+            "width": 768,
+            "height": 1024
+          },
+          "visibility": {
+            "loginForm": true,
+            "navigation": false,
+            "mainContent": false
+          },
+          "screenshot": "responsive-tablet.png"
+        },
+        "mobile": {
+          "viewport": {
+            "name": "mobile",
+            "width": 375,
+            "height": 667
+          },
+          "visibility": {
+            "loginForm": true,
+            "navigation": false,
+            "mainContent": false
+          },
+          "screenshot": "responsive-mobile.png"
+        }
+      }
+    },
+    {
+      "name": "Performance Test",
+      "status": "PASSED",
+      "duration": 625,
+      "result": {
+        "basicLoadTime": 334,
+        "domContentLoaded": null,
+        "loadComplete": null,
+        "firstPaint": 96,
+        "resourceCount": 31,
+        "documentReadyState": "complete",
+        "consoleErrors": []
+      }
+    },
+    {
+      "name": "Accessibility Test",
+      "status": "PASSED",
+      "duration": 2642,
+      "result": {
+        "headingCount": 1,
+        "headings": [
+          {
+            "level": "H1",
+            "text": "Welcome back"
+          }
+        ],
+        "totalInputs": 2,
+        "labeledInputs": 2,
+        "labelingPercentage": 100,
+        "totalImages": 1,
+        "imagesWithAlt": 1,
+        "altTextPercentage": 100,
+        "focusableElements": 4
+      }
+    }
+  ],
+  "errors": [],
+  "summary": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "successRate": 100,
+    "totalErrors": 0
+  }
+}

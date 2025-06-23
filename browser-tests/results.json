@@ -1,0 +1,64 @@
+{
+  "timestamp": "2025-06-23T12:03:07.564Z",
+  "tests": [
+    {
+      "name": "Basic Application Load",
+      "status": "PASS",
+      "details": {
+        "httpStatus": 200,
+        "title": "nxsGPT",
+        "loadTime": "1020ms"
+      }
+    },
+    {
+      "name": "UI Element Validation",
+      "status": "PASS",
+      "details": {
+        "hasLoginForm": true,
+        "hasNavigation": false,
+        "hasButtons": true,
+        "hasInputs": true,
+        "bodyText": "Welcome back\nEmail address\nPassword\nContinue\n\nDon't have an account? Sign up"
+      }
+    },
+    {
+      "name": "Responsive Design",
+      "status": "PASS",
+      "details": {
+        "viewportsTested": 3
+      }
+    },
+    {
+      "name": "Performance Testing",
+      "status": "PASS",
+      "details": {
+        "loadTime": 1020,
+        "resourceCount": 45,
+        "consoleErrors": 0
+      }
+    },
+    {
+      "name": "Accessibility Testing",
+      "status": "PARTIAL",
+      "details": {
+        "hasHeadings": true,
+        "hasLandmarks": false,
+        "hasAltTexts": true,
+        "hasLabels": true,
+        "focusableElements": 4
+      }
+    }
+  ],
+  "performance": {
+    "loadTime": 1020,
+    "resourceCount": 45,
+    "consoleErrors": 0
+  },
+  "screenshots": [
+    "homepage-desktop.png",
+    "homepage-desktop.png",
+    "homepage-tablet.png",
+    "homepage-mobile.png"
+  ],
+  "errors": []
+}
