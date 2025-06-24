@@ -102,7 +102,7 @@ function CodeInterpreter({ conversationId }: { conversationId?: string | null })
         defaultChecked={runCode}
         setValue={debouncedChange}
         label={localize('com_assistants_code_interpreter')}
-        isCheckedClassName="border-purple-600/40 bg-purple-500/10 hover:bg-purple-700/10"
+        isCheckedClassName="border-nextstrategy-primary/40 bg-nextstrategy-primary/10 hover:bg-nextstrategy-mint/10"
         icon={<TerminalSquareIcon className="icon-md" />}
       />
       <ApiKeyDialog

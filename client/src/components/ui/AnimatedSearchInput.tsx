@@ -26,7 +26,7 @@ const AnimatedSearchInput = ({
               className={cn(
                 `
                 h-4 w-4 transition-all duration-500 ease-in-out`,
-                isSearching && hasValue ? 'text-blue-400' : 'text-gray-400',
+                isSearching && hasValue ? 'text-nextstrategy-primary' : 'text-gray-400',
               )}
             />
           </div>

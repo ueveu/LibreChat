@@ -72,7 +72,7 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
           {localize('com_auth_email_verification_resend_prompt')}
           <button
             type="button"
-            className="ml-2 text-blue-600 hover:underline"
+            className="ml-2 text-nextstrategy-primary hover:underline"
             onClick={handleResendEmail}
             disabled={resendLinkMutation.isLoading}
           >
