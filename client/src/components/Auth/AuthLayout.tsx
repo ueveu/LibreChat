@@ -57,7 +57,7 @@ function AuthLayout({
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col auth-page">
+    <div className="relative flex min-h-screen flex-col bg-white dark:bg-gray-900">
       <Banner />
       <BlinkAnimation active={isFetching}>
         <div className="mt-6 h-4 w-full"></div>
