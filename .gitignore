@@ -125,3 +125,32 @@ helm/**/.values.yaml
 # SAML Idp cert
 *.cert
 .aider*
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dev-debug.log
+# Dependency directories
+# Environment variables
+.env
+# Editor directories and files
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# OS specific
+
+# Task files
+# tasks.json
+# tasks/ 
+TASKMASTER_DOCUMENTATION.md
+CLAUDE.md
+CLAUDE.md
+.mcp.json
+CLAUDE.md
+.taskmaster/config.json
+.taskmaster/state.json
+.taskmaster/docs/librechat_optimization_prd.txt
+.taskmaster/templates/example_prd.txt

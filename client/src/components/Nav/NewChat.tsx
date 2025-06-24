@@ -81,7 +81,7 @@ export default function NewChat({
                 variant="outline"
                 data-testid="nav-new-chat-button"
                 aria-label={localize('com_ui_new_chat')}
-                className="rounded-full border-none bg-transparent p-2 hover:bg-surface-hover md:rounded-xl"
+                className="rounded-full border-none bg-transparent p-2 hover:bg-nextstrategy-primary/20 hover:text-nextstrategy-dark transition-colors md:rounded-xl"
                 onClick={clickHandler}
               >
                 <NewChatIcon className="icon-md md:h-6 md:w-6" />

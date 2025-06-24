@@ -7,8 +7,9 @@ module.exports = {
   darkMode: ['class'],
   theme: {
     fontFamily: {
-      sans: ['Inter', 'sans-serif'],
-      mono: ['Roboto Mono', 'monospace'],
+      sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+      mono: ['Roboto Mono', 'Consolas', 'Monaco', 'Courier New', 'monospace'],
+      display: ['Montserrat', 'Inter', 'sans-serif'],
     },
     // fontFamily: {
     //   sans: ['Söhne', 'sans-serif'],
@@ -62,10 +63,10 @@ module.exports = {
           900: '#052e16',
         },
         nextstrategy: {
-          primary: '#95ee85',
+          primary: '#94ed85',
           secondary: '#87c6ba',
           light: '#98ff8e',
-          mint: '#86e2c0',
+          mint: '#85e1c0',
           dark: '#141414',
           white: '#ffffff',
         },
