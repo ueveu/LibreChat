@@ -27,7 +27,7 @@ const edit = require('./edit');
 const keys = require('./keys');
 const user = require('./user');
 const ask = require('./ask');
-const mcp = require('./mcp');
+const n8n = require('./n8n');
 
 module.exports = {
   ask,
@@ -59,5 +59,5 @@ module.exports = {
   assistants,
   categories,
   staticRoute,
-  mcp,
+  n8n,
 };

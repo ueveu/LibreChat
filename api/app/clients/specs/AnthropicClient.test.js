@@ -309,7 +309,7 @@ describe('AnthropicClient', () => {
       };
       client.setOptions({ modelOptions, promptCache: true });
       const anthropicClient = client.getClient(modelOptions);
-      expect(anthropicClient._options.defaultHeaders).toBeUndefined();
+      expect(anthropicClient.defaultHeaders).not.toHaveProperty('anthropic-beta');
     });
 
     it('should not add beta header for other models', () => {
@@ -320,7 +320,7 @@ describe('AnthropicClient', () => {
         },
       });
       const anthropicClient = client.getClient();
-      expect(anthropicClient._options.defaultHeaders).toBeUndefined();
+      expect(anthropicClient.defaultHeaders).not.toHaveProperty('anthropic-beta');
     });
   });
 

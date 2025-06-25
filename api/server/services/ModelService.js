@@ -118,7 +118,7 @@ const fetchModels = async ({
  * @function
  * @param {object} opts - The options for fetching the models.
  * @param {string} opts.user - The user ID to send to the API.
- * @param {boolean} [opts.azure=false] - Whether to fetch models from Azure.
+ * @param {boolean} [opts.azure=true] - Whether to fetch models from Azure.
  * @param {boolean} [opts.assistants=false] - Whether to fetch models from Azure.
  * @param {boolean} [opts.plugins=false] - Whether to fetch models from the plugins.
  * @param {string[]} [_models=[]] - The models to use as a fallback.

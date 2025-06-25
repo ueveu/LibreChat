@@ -1,25 +1,24 @@
+import { v4 } from 'uuid';
+import debounce from 'lodash/debounce';
 import { useQueryClient } from '@tanstack/react-query';
-import type { TEndpointsConfig, TError } from 'librechat-data-provider';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
-  defaultAssistantsVersion,
-  fileConfig as defaultFileConfig,
+  QueryKeys,
   EModelEndpoint,
+  mergeFileConfig,
   isAgentsEndpoint,
   isAssistantsEndpoint,
-  mergeFileConfig,
-  QueryKeys,
+  defaultAssistantsVersion,
+  fileConfig as defaultFileConfig,
 } from 'librechat-data-provider';
-import debounce from 'lodash/debounce';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { v4 } from 'uuid';
+import type { TEndpointsConfig, TError } from 'librechat-data-provider';
 import type { ExtendedFile, FileSetter } from '~/common';
-import { useGetFileConfig, useUploadFileMutation } from '~/data-provider';
+import { useUploadFileMutation, useGetFileConfig } from '~/data-provider';
 import useLocalize, { TranslationKeys } from '~/hooks/useLocalize';
-import { useChatContext } from '~/Providers/ChatContext';
-import { useToastContext } from '~/Providers/ToastContext';
-import { logger, validateFiles } from '~/utils';
-import { processFileForUpload } from '~/utils/heicConverter';
 import { useDelayedUploadToast } from './useDelayedUploadToast';
+import { useToastContext } from '~/Providers/ToastContext';
+import { useChatContext } from '~/Providers/ChatContext';
+import { logger, validateFiles } from '~/utils';
 import useUpdateFiles from './useUpdateFiles';
 
 type UseFileHandling = {
@@ -263,110 +262,41 @@ const useFileHandling = (params?: UseFileHandling) => {
     for (const originalFile of fileList) {
       const file_id = v4();
       try {
-        // Create initial preview with original file
-        const initialPreview = URL.createObjectURL(originalFile);
-
-        // Create initial ExtendedFile to show immediately
-        const initialExtendedFile: ExtendedFile = {
+        const preview = URL.createObjectURL(originalFile);
+        const extendedFile: ExtendedFile = {
           file_id,
           file: originalFile,
           type: originalFile.type,
-          preview: initialPreview,
-          progress: 0.1, // Show as processing
+          preview,
+          progress: 0.2,
           size: originalFile.size,
         };
 
         if (_toolResource != null && _toolResource !== '') {
-          initialExtendedFile.tool_resource = _toolResource;
+          extendedFile.tool_resource = _toolResource;
         }
 
-        // Add file immediately to show in UI
-        addFile(initialExtendedFile);
-
-        // Check if HEIC conversion is needed and show toast
-        const isHEIC =
-          originalFile.type === 'image/heic' ||
-          originalFile.type === 'image/heif' ||
-          originalFile.name.toLowerCase().match(/\.(heic|heif)$/);
-
-        if (isHEIC) {
-          showToast({
-            message: localize('com_info_heic_converting'),
-            status: 'info',
-            duration: 3000,
-          });
+        const isImage = originalFile.type.split('/')[0] === 'image';
+        const tool_resource =
+          extendedFile.tool_resource ?? params?.additionalMetadata?.tool_resource;
+        if (isAgentsEndpoint(endpoint) && !isImage && tool_resource == null) {
+          /** Note: this needs to be removed when we can support files to providers */
+          setError('com_error_files_unsupported_capability');
+          continue;
         }
 
-        // Process file for HEIC conversion if needed
-        const processedFile = await processFileForUpload(
-          originalFile,
-          0.9,
-          (conversionProgress) => {
-            // Update progress during HEIC conversion (0.1 to 0.5 range for conversion)
-            const adjustedProgress = 0.1 + conversionProgress * 0.4;
-            replaceFile({
-              ...initialExtendedFile,
-              progress: adjustedProgress,
-            });
-          },
-        );
+        addFile(extendedFile);
 
-        // If file was converted, update with new file and preview
-        if (processedFile !== originalFile) {
-          URL.revokeObjectURL(initialPreview); // Clean up original preview
-          const newPreview = URL.createObjectURL(processedFile);
-
-          const updatedExtendedFile: ExtendedFile = {
-            ...initialExtendedFile,
-            file: processedFile,
-            type: processedFile.type,
-            preview: newPreview,
-            progress: 0.5, // Conversion complete, ready for upload
-            size: processedFile.size,
-          };
-
-          replaceFile(updatedExtendedFile);
-
-          const isImage = processedFile.type.split('/')[0] === 'image';
-          if (isImage) {
-            loadImage(updatedExtendedFile, newPreview);
-            continue;
-          }
-
-          await startUpload(updatedExtendedFile);
-        } else {
-          // File wasn't converted, proceed with original
-          const isImage = originalFile.type.split('/')[0] === 'image';
-          const tool_resource =
-            initialExtendedFile.tool_resource ?? params?.additionalMetadata?.tool_resource;
-          if (isAgentsEndpoint(endpoint) && !isImage && tool_resource == null) {
-            /** Note: this needs to be removed when we can support files to providers */
-            setError('com_error_files_unsupported_capability');
-            continue;
-          }
-
-          // Update progress to show ready for upload
-          const readyExtendedFile = {
-            ...initialExtendedFile,
-            progress: 0.2,
-          };
-          replaceFile(readyExtendedFile);
-
-          if (isImage) {
-            loadImage(readyExtendedFile, initialPreview);
-            continue;
-          }
-
-          await startUpload(readyExtendedFile);
+        if (isImage) {
+          loadImage(extendedFile, preview);
+          continue;
         }
+
+        await startUpload(extendedFile);
       } catch (error) {
         deleteFileById(file_id);
         console.log('file handling error', error);
-        if (error instanceof Error && error.message.includes('HEIC')) {
-          setError('com_error_heic_conversion');
-        } else {
-          setError('com_error_files_process');
-        }
+        setError('com_error_files_process');
       }
     }
   };

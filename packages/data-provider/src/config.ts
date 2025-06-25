@@ -588,18 +588,6 @@ export type TStartupConfig = {
     scraperType?: ScraperTypes;
     rerankerType?: RerankerTypes;
   };
-  mcpServers?: Record<
-    string,
-    {
-      customUserVars: Record<
-        string,
-        {
-          title: string;
-          description: string;
-        }
-      >;
-    }
-  >;
 };
 
 export enum OCRStrategy {
@@ -897,6 +885,7 @@ export const defaultModels = {
   [EModelEndpoint.assistants]: [...sharedOpenAIModels, 'chatgpt-4o-latest'],
   [EModelEndpoint.agents]: sharedOpenAIModels, // TODO: Add agent models (agentsModels)
   [EModelEndpoint.google]: [
+    // Shared Google Models between Vertex AI & Gen AI
     // Gemini 2.0 Models
     'gemini-2.0-flash-001',
     'gemini-2.0-flash-exp',
@@ -1147,10 +1136,6 @@ export enum CacheKeys {
    * Key for in-progress flow states.
    */
   FLOWS = 'flows',
-  /**
-   * Key for individual MCP Tool Manifests.
-   */
-  MCP_TOOLS = 'mcp_tools',
   /**
    * Key for pending chat requests (concurrency check)
    */
@@ -1406,8 +1391,6 @@ export enum Constants {
   GLOBAL_PROJECT_NAME = 'instance',
   /** Delimiter for MCP tools */
   mcp_delimiter = '_mcp_',
-  /** Prefix for MCP plugins */
-  mcp_prefix = 'mcp_',
   /** Placeholder Agent ID for Ephemeral Agents */
   EPHEMERAL_AGENT_ID = 'ephemeral',
 }

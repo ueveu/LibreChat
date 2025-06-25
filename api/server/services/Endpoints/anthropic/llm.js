@@ -1,4 +1,4 @@
-const { ProxyAgent } = require('undici');
+const { HttpsProxyAgent } = require('https-proxy-agent');
 const { anthropicSettings, removeNullishValues } = require('librechat-data-provider');
 const { checkPromptCacheSupport, getClaudeHeaders, configureReasoning } = require('./helpers');
 
@@ -67,10 +67,7 @@ function getLLMConfig(apiKey, options = {}) {
   }
 
   if (options.proxy) {
-    const proxyAgent = new ProxyAgent(options.proxy);
-    requestOptions.clientOptions.fetchOptions = {
-      dispatcher: proxyAgent,
-    };
+    requestOptions.clientOptions.httpAgent = new HttpsProxyAgent(options.proxy);
   }
 
   if (options.reverseProxyUrl) {

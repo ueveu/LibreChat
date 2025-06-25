@@ -1,9 +1,9 @@
 const fs = require('fs').promises;
 const { nanoid } = require('nanoid');
-const { logger } = require('@librechat/data-schemas');
 const {
   Tools,
   Constants,
+  FileContext,
   FileSources,
   SystemRoles,
   EToolResources,
@@ -16,16 +16,16 @@ const {
   deleteAgent,
   getListAgents,
 } = require('~/models/Agent');
+const { uploadImageBuffer, filterFile } = require('~/server/services/Files/process');
 const { getStrategyFunctions } = require('~/server/services/Files/strategies');
 const { resizeAvatar } = require('~/server/services/Files/images/avatar');
 const { refreshS3Url } = require('~/server/services/Files/S3/crud');
-const { filterFile } = require('~/server/services/Files/process');
 const { updateAction, getActions } = require('~/models/Action');
-const { getCachedTools } = require('~/server/services/Config');
 const { updateAgentProjects } = require('~/models/Agent');
 const { getProjectByName } = require('~/models/Project');
-const { revertAgentVersion } = require('~/models/Agent');
 const { deleteFileByFilter } = require('~/models/File');
+const { revertAgentVersion } = require('~/models/Agent');
+const { logger } = require('~/config');
 
 const systemTools = {
   [Tools.execute_code]: true,
@@ -47,9 +47,8 @@ const createAgentHandler = async (req, res) => {
 
     agentData.tools = [];
 
-    const availableTools = await getCachedTools({ includeGlobal: true });
     for (const tool of tools) {
-      if (availableTools[tool]) {
+      if (req.app.locals.availableTools[tool]) {
         agentData.tools.push(tool);
       }
 
@@ -446,7 +445,7 @@ const uploadAgentAvatarHandler = async (req, res) => {
     try {
       await fs.unlink(req.file.path);
       logger.debug('[/:agent_id/avatar] Temp. image upload file deleted');
-    } catch {
+    } catch (error) {
       logger.debug('[/:agent_id/avatar] Temp. image upload file already deleted');
     }
   }

@@ -1,4 +1,4 @@
-import { ProxyAgent } from 'undici';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import { KnownEndpoints } from 'librechat-data-provider';
 import type * as t from '~/types';
 import { sanitizeModelName, constructAzureURL } from '~/utils/azure';
@@ -102,10 +102,8 @@ export function getOpenAIConfig(
   }
 
   if (proxy) {
-    const proxyAgent = new ProxyAgent(proxy);
-    configOptions.fetchOptions = {
-      dispatcher: proxyAgent,
-    };
+    const proxyAgent = new HttpsProxyAgent(proxy);
+    configOptions.httpAgent = proxyAgent;
   }
 
   if (azure) {

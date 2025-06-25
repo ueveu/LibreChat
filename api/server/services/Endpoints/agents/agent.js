@@ -63,17 +63,11 @@ const initializeAgent = async ({
   }
   let currentFiles;
 
-  const _modelOptions = structuredClone(
-    Object.assign(
-      { model: agent.model },
-      agent.model_parameters ?? { model: agent.model },
-      isInitialAgent === true ? endpointOption?.model_parameters : {},
-    ),
-  );
-
-  const { resendFiles = true, ...modelOptions } = _modelOptions;
-
-  if (isInitialAgent && conversationId != null && resendFiles) {
+  if (
+    isInitialAgent &&
+    conversationId != null &&
+    (agent.model_parameters?.resendFiles ?? true) === true
+  ) {
     const fileIds = (await getConvoFiles(conversationId)) ?? [];
     /** @type {Set<EToolResources>} */
     const toolResourceSet = new Set();
@@ -123,11 +117,15 @@ const initializeAgent = async ({
     getOptions = initCustom;
     agent.provider = Providers.OPENAI;
   }
-
+  const model_parameters = Object.assign(
+    {},
+    agent.model_parameters ?? { model: agent.model },
+    isInitialAgent === true ? endpointOption?.model_parameters : {},
+  );
   const _endpointOption =
     isInitialAgent === true
-      ? Object.assign({}, endpointOption, { model_parameters: modelOptions })
-      : { model_parameters: modelOptions };
+      ? Object.assign({}, endpointOption, { model_parameters })
+      : { model_parameters };
 
   const options = await getOptions({
     req,
@@ -137,20 +135,6 @@ const initializeAgent = async ({
     overrideModel: agent.model,
     endpointOption: _endpointOption,
   });
-
-  const tokensModel =
-    agent.provider === EModelEndpoint.azureOpenAI ? agent.model : modelOptions.model;
-  const maxTokens = optionalChainWithEmptyCheck(
-    modelOptions.maxOutputTokens,
-    modelOptions.maxTokens,
-    0,
-  );
-  const maxContextTokens = optionalChainWithEmptyCheck(
-    modelOptions.maxContextTokens,
-    modelOptions.max_context_tokens,
-    getModelMaxTokens(tokensModel, providerEndpointMap[provider]),
-    4096,
-  );
 
   if (
     agent.endpoint === EModelEndpoint.azureOpenAI &&
@@ -164,9 +148,13 @@ const initializeAgent = async ({
   }
 
   /** @type {import('@librechat/agents').ClientOptions} */
-  agent.model_parameters = { ...options.llmConfig };
+  agent.model_parameters = Object.assign(model_parameters, options.llmConfig);
   if (options.configOptions) {
     agent.model_parameters.configuration = options.configOptions;
+  }
+
+  if (!agent.model_parameters.model) {
+    agent.model_parameters.model = agent.model;
   }
 
   if (agent.instructions && agent.instructions !== '') {
@@ -183,11 +171,23 @@ const initializeAgent = async ({
     });
   }
 
+  const tokensModel =
+    agent.provider === EModelEndpoint.azureOpenAI ? agent.model : agent.model_parameters.model;
+  const maxTokens = optionalChainWithEmptyCheck(
+    agent.model_parameters.maxOutputTokens,
+    agent.model_parameters.maxTokens,
+    0,
+  );
+  const maxContextTokens = optionalChainWithEmptyCheck(
+    agent.model_parameters.maxContextTokens,
+    agent.max_context_tokens,
+    getModelMaxTokens(tokensModel, providerEndpointMap[provider]),
+    4096,
+  );
   return {
     ...agent,
     tools,
     attachments,
-    resendFiles,
     toolContextMap,
     maxContextTokens: (maxContextTokens - maxTokens) * 0.9,
   };

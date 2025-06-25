@@ -8,6 +8,7 @@ import { NewChatIcon, MobileSidebar, Sidebar } from '~/components/svg';
 import { getDefaultModelSpec, getModelSpecPreset } from '~/utils';
 import { TooltipAnchor, Button } from '~/components/ui';
 import { useLocalize, useNewConvo } from '~/hooks';
+import N8NButton from './N8NButton';
 import store from '~/store';
 
 export default function NewChat({
@@ -71,6 +72,7 @@ export default function NewChat({
         />
         <div className="flex">
           {headerButtons}
+          <N8NButton isSmallScreen={isSmallScreen} />
           <TooltipAnchor
             description={localize('com_ui_new_chat')}
             render={
@@ -79,7 +81,7 @@ export default function NewChat({
                 variant="outline"
                 data-testid="nav-new-chat-button"
                 aria-label={localize('com_ui_new_chat')}
-                className="rounded-full border-none bg-transparent p-2 hover:bg-surface-hover md:rounded-xl"
+                className="rounded-full border-none bg-transparent p-2 hover:bg-nextstrategy-primary/20 hover:text-nextstrategy-dark transition-colors md:rounded-xl"
                 onClick={clickHandler}
               >
                 <NewChatIcon className="icon-md md:h-6 md:w-6" />

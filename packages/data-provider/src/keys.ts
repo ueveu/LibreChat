@@ -48,6 +48,9 @@ export enum QueryKeys {
   banner = 'banner',
   /* Memories */
   memories = 'memories',
+  /* N8N Integration */
+  n8nConfig = 'n8nConfig',
+  n8nStatus = 'n8nStatus',
 }
 
 export enum MutationKeys {

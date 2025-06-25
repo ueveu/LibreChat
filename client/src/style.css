@@ -4,105 +4,157 @@
 
 /* Custom Variables */
 :root {
-  --white: #fff;
-  --black: #000;
-  --gray-20: #ececf1;
-  --gray-50: #f7f7f8;
-  --gray-100: #ececec;
-  --gray-200: #e3e3e3;
-  --gray-300: #cdcdcd;
-  --gray-400: #999696;
-  --gray-500: #595959;
-  --gray-600: #424242;
-  --gray-700: #2f2f2f;
-  --gray-800: #212121;
-  --gray-850: #171717;
-  --gray-900: #0d0d0d;
-  --green-50: #f0fdf4;
-  --green-100: #dcfce7;
-  --green-200: #bbf7d0;
-  --green-300: #95ee85;
-  --green-400: #98ff8e;
-  --green-500: #87c6ba;
-  --green-550: #86e2c0;
-  --green-600: #16a34a;
-  --green-700: #15803d;
-  --green-800: #166534;
-  --green-900: #14532d;
-  --green-950: #052e16;
-  --red-50: #fef2f2;
-  --red-100: #fee2e2;
-  --red-200: #fecaca;
-  --red-300: #fca5a5;
-  --red-400: #f87171;
-  --red-500: #ef4444;
-  --red-600: #dc2626;
-  --red-700: #b91c1c;
-  --red-800: #991b1b;
-  --red-900: #7f1d1d;
-  --red-950: #450a0a;
-  --amber-50: #fffbeb;
-  --amber-100: #fef3c7;
-  --amber-200: #fde68a;
-  --amber-300: #fcd34d;
-  --amber-400: #fbbf24;
-  --amber-500: #f59e0b;
-  --amber-600: #d97706;
-  --amber-700: #b45309;
-  --amber-800: #92400e;
-  --amber-900: #78350f;
-  --amber-950: #451a03;
-  --gizmo-gray-500: #999;
-  --gizmo-gray-600: #666;
-  --gizmo-gray-950: #0f0f0f;
-  --nextstrategy-primary: #95ee85;
-  --nextstrategy-secondary: #87c6ba;
-  --nextstrategy-light: #98ff8e;
-  --nextstrategy-mint: #86e2c0;
-  --nextstrategy-dark: #141414;
-  --nextstrategy-green: #95ee85;
-  --nextstrategy-teal: #87c6ba;
+  /* NXS Design Tokens */
+  --nxs-green-50: #F0FDF4;
+  --nxs-green-100: #DCFCE7;
+  --nxs-green-200: #BBF7D0;
+  --nxs-green-300: #94ED85;
+  --nxs-green-400: #86E2C0;
+  --nxs-green-500: #87C6BA;
+  --nxs-green-600: #16A34A;
+  --nxs-green-700: #15803D;
+  --nxs-green-800: #166534;
+  --nxs-green-900: #14532D;
+  --nxs-green-950: #052E16;
+
+  --nxs-gray-50: #F7F7F8;
+  --nxs-gray-100: #ECECEC;
+  --nxs-gray-200: #E3E3E3;
+  --nxs-gray-300: #CDCDCD;
+  --nxs-gray-400: #999696;
+  --nxs-gray-500: #595959;
+  --nxs-gray-600: #424242;
+  --nxs-gray-700: #2F2F2F;
+  --nxs-gray-800: #212121;
+  --nxs-gray-850: #171717;
+  --nxs-gray-900: #0D0D0D;
+
+  --nxs-black: #141414;
+  --nxs-white: #FFFFFF;
+
+  --nxs-red-500: #EF4444;
+  --nxs-red-700: #B91C1C;
+  --nxs-red-800: #991B1B;
+  --nxs-red-900: #7F1D1D;
+
+  --nxs-amber-500: #F59E0B;
+
+  /* Radii */
+  --nxs-radius-sm: 6px;
+  --nxs-radius: 10px;
+  --nxs-radius-lg: 14px;
+
+  /* Font Sizes */
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
   --font-size-lg: 1.125rem;
   --font-size-xl: 1.25rem;
-}
-html {
-  --presentation: var(--white);
-  --text-primary: var(--gray-800);
-  --text-secondary: var(--gray-600);
-  --text-secondary-alt: var(--gray-500);
-  --text-tertiary: var(--gray-500);
-  --text-warning: var(--amber-500);
-  --ring-primary: var(--gray-500);
-  --header-primary: var(--nextstrategy-green);
-  --header-hover: var(--nextstrategy-mint);
-  --header-button-hover: var(--nextstrategy-teal);
-  --surface-active: var(--gray-100);
-  --surface-active-alt: var(--gray-200);
-  --surface-hover: var(--gray-200);
-  --surface-hover-alt: var(--gray-300);
-  --surface-primary: var(--white);
-  --surface-primary-alt: var(--gray-50);
-  --surface-primary-contrast: var(--gray-100);
-  --surface-secondary: var(--gray-50);
-  --surface-secondary-alt: var(--gray-200);
-  --surface-tertiary: var(--gray-100);
-  --surface-tertiary-alt: var(--white);
-  --surface-dialog: var(--white);
-  --surface-submit: var(--green-400);
-  --surface-submit-hover: var(--green-500);
-  --surface-destructive: var(--red-700);
-  --surface-destructive-hover: var(--red-800);
-  --surface-chat: var(--white);
-  --border-light: var(--gray-200);
-  --border-medium-alt: var(--gray-300);
-  --border-medium: var(--gray-300);
-  --border-heavy: var(--gray-400);
-  --border-xheavy: var(--gray-500);
-  /* These are test styles */
 
+  /* LibreChat's original variables, for reference */
+  --white: var(--nxs-white);
+  --black: var(--nxs-black);
+  
+  --gray-20: #ececf1; /* Note: Not in NXS palette, keeping for now */
+  --gray-50: var(--nxs-gray-50);
+  --gray-100: var(--nxs-gray-100);
+  --gray-200: var(--nxs-gray-200);
+  --gray-300: var(--nxs-gray-300);
+  --gray-400: var(--nxs-gray-400);
+  --gray-500: var(--nxs-gray-500);
+  --gray-600: var(--nxs-gray-600);
+  --gray-700: var(--nxs-gray-700);
+  --gray-800: var(--nxs-gray-800);
+  --gray-850: var(--nxs-gray-850);
+  --gray-900: var(--nxs-gray-900);
+
+  --green-50: var(--nxs-green-50);
+  --green-100: var(--nxs-green-100);
+  --green-200: var(--nxs-green-200);
+  --green-300: var(--nxs-green-300);
+  --green-400: var(--nxs-green-400);
+  --green-500: var(--nxs-green-500);
+  --green-550: var(--nxs-green-400); /* Remapped */
+  --green-600: var(--nxs-green-600);
+  --green-700: var(--nxs-green-700);
+  --green-800: var(--nxs-green-800);
+  --green-900: var(--nxs-green-900);
+  --green-950: var(--nxs-green-950);
+
+  --red-50: #fef2f2;
+  --red-100: #fee2e2;
+  --red-200: #fecaca;
+  --red-300: #fca5a5;
+  --red-400: #f87171;
+  --red-500: var(--nxs-red-500);
+  --red-600: #dc2626;
+  --red-700: var(--nxs-red-700);
+  --red-800: var(--nxs-red-800);
+  --red-900: var(--nxs-red-900);
+  --red-950: #450a0a;
+
+  --amber-50: #fffbeb;
+  --amber-100: #fef3c7;
+  --amber-200: #fde68a;
+  --amber-300: #fcd34d;
+  --amber-400: #fbbf24;
+  --amber-500: var(--nxs-amber-500);
+  --amber-600: #d97706;
+  --amber-700: #b45309;
+  --amber-800: #92400e;
+  --amber-900: #78350f;
+  --amber-950: #451a03;
+
+  --gizmo-gray-500: #999;
+  --gizmo-gray-600: #666;
+  --gizmo-gray-950: #0f0f0f;
+
+  --nextstrategy-primary: var(--nxs-green-300);
+  --nextstrategy-secondary: var(--nxs-green-500);
+  --nextstrategy-light: var(--nxs-green-200);
+  --nextstrategy-mint: var(--nxs-green-400);
+  --nextstrategy-dark: var(--nxs-black);
+  --nextstrategy-green: var(--nxs-green-300);
+  --nextstrategy-teal: var(--nxs-green-500);
+  --nextstrategy-border-radius: var(--nxs-radius);
+  --nextstrategy-border-radius-sm: var(--nxs-radius-sm);
+  --nextstrategy-border-radius-lg: var(--nxs-radius-lg);
+}
+
+html {
+  --presentation: var(--nxs-white);
+  --text-primary: var(--nxs-gray-800);
+  --text-secondary: var(--nxs-gray-600);
+  --text-secondary-alt: var(--nxs-gray-500);
+  --text-tertiary: var(--nxs-gray-500);
+  --text-warning: var(--nxs-amber-500);
+  --ring-primary: var(--nxs-gray-500);
+  --header-primary: var(--nxs-green-300);
+  --header-hover: var(--nxs-green-400);
+  --header-button-hover: var(--nxs-green-500);
+  --surface-active: var(--nxs-gray-100);
+  --surface-active-alt: var(--nxs-gray-200);
+  --surface-hover: var(--nxs-gray-200);
+  --surface-hover-alt: var(--nxs-gray-300);
+  --surface-primary: var(--nxs-white);
+  --surface-primary-alt: var(--nxs-gray-50);
+  --surface-primary-contrast: var(--nxs-gray-100);
+  --surface-secondary: var(--nxs-gray-50);
+  --surface-secondary-alt: var(--nxs-gray-200);
+  --surface-tertiary: var(--nxs-gray-100);
+  --surface-tertiary-alt: var(--nxs-white);
+  --surface-dialog: var(--nxs-white);
+  --surface-submit: var(--nxs-green-300);
+  --surface-submit-hover: var(--nxs-green-500);
+  --surface-destructive: var(--nxs-red-700);
+  --surface-destructive-hover: var(--nxs-red-800);
+  --surface-chat: #f8fef8;
+  --border-light: var(--nxs-gray-200);
+  --border-medium-alt: var(--nxs-gray-300);
+  --border-medium: var(--nxs-gray-300);
+  --border-heavy: var(--nxs-gray-400);
+  --border-xheavy: var(--nxs-gray-500);
+  /* shadcn/ui styles */
   --background: 0 0% 100%;
   --foreground: 0 0% 3.9%;
   --card: 0 0% 100%;
@@ -120,7 +172,7 @@ html {
   --border: 0 0% 89.8%;
   --input: 0 0% 89.8%;
   --ring: 0 0% 3.9%;
-  --radius: 0.5rem;
+  --radius: var(--nxs-radius);
   --chart-1: 12 76% 61%;
   --chart-2: 173 58% 39%;
   --chart-3: 197 37% 24%;
@@ -129,39 +181,38 @@ html {
   --switch-unchecked: 0 0% 58%;
 }
 .dark {
-  --presentation: var(--gray-800);
-  --text-primary: var(--gray-100);
-  --text-secondary: var(--gray-300);
-  --text-secondary-alt: var(--gray-400);
-  --text-tertiary: var(--gray-500);
-  --text-warning: var(--amber-500);
-  --header-primary: var(--nextstrategy-teal);
-  --header-hover: var(--nextstrategy-mint);
-  --header-button-hover: var(--nextstrategy-green);
-  --surface-active: var(--gray-500);
-  --surface-active-alt: var(--gray-700);
-  --surface-hover: var(--gray-600);
-  --surface-hover-alt: var(--gray-600);
-  --surface-primary: var(--gray-900);
-  --surface-primary-alt: var(--gray-850);
-  --surface-primary-contrast: var(--gray-850);
-  --surface-secondary: var(--gray-800);
-  --surface-secondary-alt: var(--gray-800);
-  --surface-tertiary: var(--gray-700);
-  --surface-tertiary-alt: var(--gray-700);
-  --surface-dialog: var(--gray-850);
-  --surface-submit: var(--green-400);
-  --surface-submit-hover: var(--green-500);
-  --surface-destructive: var(--red-800);
-  --surface-destructive-hover: var(--red-900);
-  --surface-chat: var(--gray-700);
-  --border-light: var(--gray-700);
-  --border-medium-alt: var(--gray-600);
-  --border-medium: var(--gray-600);
-  --border-heavy: var(--gray-500);
-  --border-xheavy: var(--gray-400);
-  /* These are test styles */
-
+  --presentation: var(--nxs-gray-850);
+  --text-primary: var(--nxs-gray-100);
+  --text-secondary: var(--nxs-gray-300);
+  --text-secondary-alt: var(--nxs-gray-400);
+  --text-tertiary: var(--nxs-gray-500);
+  --text-warning: var(--nxs-amber-500);
+  --header-primary: var(--nxs-green-500);
+  --header-hover: var(--nxs-green-400);
+  --header-button-hover: var(--nxs-green-300);
+  --surface-active: var(--nxs-gray-500);
+  --surface-active-alt: var(--nxs-gray-700);
+  --surface-hover: var(--nxs-gray-600);
+  --surface-hover-alt: var(--nxs-gray-600);
+  --surface-primary: var(--nxs-gray-900);
+  --surface-primary-alt: var(--nxs-gray-850);
+  --surface-primary-contrast: var(--nxs-gray-850);
+  --surface-secondary: var(--nxs-gray-800);
+  --surface-secondary-alt: var(--nxs-gray-800);
+  --surface-tertiary: var(--nxs-gray-700);
+  --surface-tertiary-alt: var(--nxs-gray-700);
+  --surface-dialog: var(--nxs-gray-850);
+  --surface-submit: var(--nxs-green-300);
+  --surface-submit-hover: var(--nxs-green-500);
+  --surface-destructive: var(--nxs-red-800);
+  --surface-destructive-hover: var(--nxs-red-900);
+  --surface-chat: #2a2f2a;
+  --border-light: var(--nxs-gray-700);
+  --border-medium-alt: var(--nxs-gray-600);
+  --border-medium: var(--nxs-gray-600);
+  --border-heavy: var(--nxs-gray-500);
+  --border-xheavy: var(--nxs-gray-400);
+  /* shadcn/ui styles */
   --background: 0 0% 7%;
   --foreground: 0 0% 98%;
   --card: 0 0% 3.9%;

@@ -1,15 +1,15 @@
 const express = require('express');
-const { isEnabled } = require('@librechat/api');
-const { logger } = require('@librechat/data-schemas');
+
 const {
+  getSharedLink,
   getSharedMessages,
   createSharedLink,
   updateSharedLink,
-  deleteSharedLink,
   getSharedLinks,
-  getSharedLink,
-} = require('~/models');
+  deleteSharedLink,
+} = require('~/models/Share');
 const requireJwtAuth = require('~/server/middleware/requireJwtAuth');
+const { isEnabled } = require('~/server/utils');
 const router = express.Router();
 
 /**
@@ -35,7 +35,6 @@ if (allowSharedLinks) {
           res.status(404).end();
         }
       } catch (error) {
-        logger.error('Error getting shared messages:', error);
         res.status(500).json({ message: 'Error getting shared messages' });
       }
     },
@@ -55,7 +54,9 @@ router.get('/', requireJwtAuth, async (req, res) => {
       sortDirection: ['asc', 'desc'].includes(req.query.sortDirection)
         ? req.query.sortDirection
         : 'desc',
-      search: req.query.search ? decodeURIComponent(req.query.search.trim()) : undefined,
+      search: req.query.search
+        ? decodeURIComponent(req.query.search.trim())
+        : undefined,
     };
 
     const result = await getSharedLinks(
@@ -74,7 +75,7 @@ router.get('/', requireJwtAuth, async (req, res) => {
       hasNextPage: result.hasNextPage,
     });
   } catch (error) {
-    logger.error('Error getting shared links:', error);
+    console.error('Error getting shared links:', error);
     res.status(500).json({
       message: 'Error getting shared links',
       error: error.message,
@@ -92,7 +93,6 @@ router.get('/link/:conversationId', requireJwtAuth, async (req, res) => {
       conversationId: req.params.conversationId,
     });
   } catch (error) {
-    logger.error('Error getting shared link:', error);
     res.status(500).json({ message: 'Error getting shared link' });
   }
 });
@@ -106,7 +106,6 @@ router.post('/:conversationId', requireJwtAuth, async (req, res) => {
       res.status(404).end();
     }
   } catch (error) {
-    logger.error('Error creating shared link:', error);
     res.status(500).json({ message: 'Error creating shared link' });
   }
 });
@@ -120,7 +119,6 @@ router.patch('/:shareId', requireJwtAuth, async (req, res) => {
       res.status(404).end();
     }
   } catch (error) {
-    logger.error('Error updating shared link:', error);
     res.status(500).json({ message: 'Error updating shared link' });
   }
 });
@@ -135,8 +133,7 @@ router.delete('/:shareId', requireJwtAuth, async (req, res) => {
 
     return res.status(200).json(result);
   } catch (error) {
-    logger.error('Error deleting shared link:', error);
-    return res.status(400).json({ message: 'Error deleting shared link' });
+    return res.status(400).json({ message: error.message });
   }
 });
 

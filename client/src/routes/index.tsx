@@ -1,14 +1,13 @@
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
 import {
   Login,
-  VerifyEmail,
   Registration,
+  RequestPasswordReset,
   ResetPassword,
+  VerifyEmail,
   ApiErrorWatcher,
   TwoFactorScreen,
-  RequestPasswordReset,
 } from '~/components/Auth';
-import { OAuthSuccess, OAuthError } from '~/components/OAuth';
 import { AuthContextProvider } from '~/hooks/AuthContext';
 import RouteErrorBoundary from './RouteErrorBoundary';
 import StartupLayout from './Layouts/Startup';
@@ -31,20 +30,6 @@ export const router = createBrowserRouter([
     path: 'share/:shareId',
     element: <ShareRoute />,
     errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: 'oauth',
-    errorElement: <RouteErrorBoundary />,
-    children: [
-      {
-        path: 'success',
-        element: <OAuthSuccess />,
-      },
-      {
-        path: 'error',
-        element: <OAuthError />,
-      },
-    ],
   },
   {
     path: '/',

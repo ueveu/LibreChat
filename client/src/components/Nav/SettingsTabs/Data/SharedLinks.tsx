@@ -186,7 +186,7 @@ export default function SharedLinks() {
                 to={`/share/${shareId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block truncate text-blue-500 hover:underline"
+                className="block truncate text-nextstrategy-primary hover:underline"
                 title={title}
               >
                 {title}

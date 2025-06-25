@@ -15,7 +15,7 @@ let flowManager = null;
  */
 function getMCPManager(userId) {
   if (!mcpManager) {
-    mcpManager = MCPManager.getInstance();
+    mcpManager = MCPManager.getInstance(logger);
   } else {
     mcpManager.checkIdleConnections(userId);
   }
@@ -30,6 +30,7 @@ function getFlowStateManager(flowsCache) {
   if (!flowManager) {
     flowManager = new FlowStateManager(flowsCache, {
       ttl: Time.ONE_MINUTE * 3,
+      logger,
     });
   }
   return flowManager;

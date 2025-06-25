@@ -21,12 +21,8 @@ describe('getLLMConfig', () => {
       proxy: 'http://proxy:8080',
     });
 
-    expect(result.llmConfig.clientOptions).toHaveProperty('fetchOptions');
-    expect(result.llmConfig.clientOptions.fetchOptions).toHaveProperty('dispatcher');
-    expect(result.llmConfig.clientOptions.fetchOptions.dispatcher).toBeDefined();
-    expect(result.llmConfig.clientOptions.fetchOptions.dispatcher.constructor.name).toBe(
-      'ProxyAgent',
-    );
+    expect(result.llmConfig.clientOptions).toHaveProperty('httpAgent');
+    expect(result.llmConfig.clientOptions.httpAgent).toHaveProperty('proxy', 'http://proxy:8080');
   });
 
   it('should include reverse proxy URL when provided', () => {

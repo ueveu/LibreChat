@@ -1,6 +1,6 @@
 import { Link } from 'lucide-react';
 import { useRecoilValue } from 'recoil';
-import { QueryKeys } from 'librechat-data-provider';
+import { QueryKeys, LocalStorageKeys } from 'librechat-data-provider';
 import { useQueryClient } from '@tanstack/react-query';
 import type { TMessage, TConversation } from 'librechat-data-provider';
 import type { InfiniteData } from '@tanstack/react-query';
@@ -38,7 +38,8 @@ export default function SearchButtons({ message }: { message: TMessage }) {
       title = cachedConvo?.title ?? '';
     }
 
-    document.title = title;
+    const appTitle = localStorage.getItem(LocalStorageKeys.APP_TITLE) ?? '';
+    document.title = appTitle ? `${title} | ${appTitle}` : title;
     navigateToConvo(
       cachedConvo ??
         ({

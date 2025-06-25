@@ -477,17 +477,10 @@
  */
 
 /**
- * @exports ToolCallChunk
- * @typedef {import('librechat-data-provider').Agents.ToolCallChunk} ToolCallChunk
- * @memberof typedefs
- */
-
-/**
  * @exports MessageContentImageUrl
  * @typedef {import('librechat-data-provider').Agents.MessageContentImageUrl} MessageContentImageUrl
  * @memberof typedefs
  */
-
 /** Web Search */
 
 /**

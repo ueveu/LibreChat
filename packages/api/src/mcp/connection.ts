@@ -1,5 +1,4 @@
 import { EventEmitter } from 'events';
-import { logger } from '@librechat/data-schemas';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
 import {
@@ -11,7 +10,7 @@ import { ResourceListChangedNotificationSchema } from '@modelcontextprotocol/sdk
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import type { JSONRPCMessage } from '@modelcontextprotocol/sdk/types.js';
-import type { MCPOAuthTokens } from './oauth/types';
+import type { Logger } from 'winston';
 import type * as t from './types';
 
 function isStdioOptions(options: t.MCPOptions): options is t.StdioOptions {
@@ -68,29 +67,24 @@ export class MCPConnection extends EventEmitter {
   private isReconnecting = false;
   private isInitializing = false;
   private reconnectAttempts = 0;
-  private readonly userId?: string;
-  private lastPingTime: number;
-  private oauthTokens?: MCPOAuthTokens | null;
-  private oauthRequired = false;
   iconPath?: string;
   timeout?: number;
-  url?: string;
+  private readonly userId?: string;
+  private lastPingTime: number;
 
   constructor(
     serverName: string,
     private readonly options: t.MCPOptions,
+    private logger?: Logger,
     userId?: string,
-    oauthTokens?: MCPOAuthTokens | null,
   ) {
     super();
     this.serverName = serverName;
+    this.logger = logger;
     this.userId = userId;
     this.iconPath = options.iconPath;
     this.timeout = options.timeout;
     this.lastPingTime = Date.now();
-    if (oauthTokens) {
-      this.oauthTokens = oauthTokens;
-    }
     this.client = new Client(
       {
         name: '@librechat/api-client',
@@ -113,10 +107,11 @@ export class MCPConnection extends EventEmitter {
   public static getInstance(
     serverName: string,
     options: t.MCPOptions,
+    logger?: Logger,
     userId?: string,
   ): MCPConnection {
     if (!MCPConnection.instance) {
-      MCPConnection.instance = new MCPConnection(serverName, options, userId);
+      MCPConnection.instance = new MCPConnection(serverName, options, logger, userId);
     }
     return MCPConnection.instance;
   }
@@ -134,7 +129,7 @@ export class MCPConnection extends EventEmitter {
 
   private emitError(error: unknown, errorContext: string): void {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logger.error(`${this.getLogPrefix()} ${errorContext}: ${errorMessage}`);
+    this.logger?.error(`${this.getLogPrefix()} ${errorContext}: ${errorMessage}`);
     this.emit('error', new Error(`${errorContext}: ${errorMessage}`));
   }
 
@@ -172,52 +167,45 @@ export class MCPConnection extends EventEmitter {
           if (!isWebSocketOptions(options)) {
             throw new Error('Invalid options for websocket transport.');
           }
-          this.url = options.url;
           return new WebSocketClientTransport(new URL(options.url));
 
         case 'sse': {
           if (!isSSEOptions(options)) {
             throw new Error('Invalid options for sse transport.');
           }
-          this.url = options.url;
           const url = new URL(options.url);
-          logger.info(`${this.getLogPrefix()} Creating SSE transport: ${url.toString()}`);
+          this.logger?.info(`${this.getLogPrefix()} Creating SSE transport: ${url.toString()}`);
           const abortController = new AbortController();
-
-          /** Add OAuth token to headers if available */
-          const headers = { ...options.headers };
-          if (this.oauthTokens?.access_token) {
-            headers['Authorization'] = `Bearer ${this.oauthTokens.access_token}`;
-          }
-
           const transport = new SSEClientTransport(url, {
             requestInit: {
-              headers,
+              headers: options.headers,
               signal: abortController.signal,
             },
             eventSourceInit: {
               fetch: (url, init) => {
-                const fetchHeaders = new Headers(Object.assign({}, init?.headers, headers));
+                const headers = new Headers(Object.assign({}, init?.headers, options.headers));
                 return fetch(url, {
                   ...init,
-                  headers: fetchHeaders,
+                  headers,
                 });
               },
             },
           });
 
           transport.onclose = () => {
-            logger.info(`${this.getLogPrefix()} SSE transport closed`);
+            this.logger?.info(`${this.getLogPrefix()} SSE transport closed`);
             this.emit('connectionChange', 'disconnected');
           };
 
           transport.onerror = (error) => {
-            logger.error(`${this.getLogPrefix()} SSE transport error:`, error);
+            this.logger?.error(`${this.getLogPrefix()} SSE transport error:`, error);
             this.emitError(error, 'SSE transport error:');
           };
 
           transport.onmessage = (message) => {
-            logger.info(`${this.getLogPrefix()} Message received: ${JSON.stringify(message)}`);
+            this.logger?.info(
+              `${this.getLogPrefix()} Message received: ${JSON.stringify(message)}`,
+            );
           };
 
           this.setupTransportErrorHandlers(transport);
@@ -228,38 +216,33 @@ export class MCPConnection extends EventEmitter {
           if (!isStreamableHTTPOptions(options)) {
             throw new Error('Invalid options for streamable-http transport.');
           }
-          this.url = options.url;
           const url = new URL(options.url);
-          logger.info(
+          this.logger?.info(
             `${this.getLogPrefix()} Creating streamable-http transport: ${url.toString()}`,
           );
           const abortController = new AbortController();
 
-          // Add OAuth token to headers if available
-          const headers = { ...options.headers };
-          if (this.oauthTokens?.access_token) {
-            headers['Authorization'] = `Bearer ${this.oauthTokens.access_token}`;
-          }
-
           const transport = new StreamableHTTPClientTransport(url, {
             requestInit: {
-              headers,
+              headers: options.headers,
               signal: abortController.signal,
             },
           });
 
           transport.onclose = () => {
-            logger.info(`${this.getLogPrefix()} Streamable-http transport closed`);
+            this.logger?.info(`${this.getLogPrefix()} Streamable-http transport closed`);
             this.emit('connectionChange', 'disconnected');
           };
 
           transport.onerror = (error: Error | unknown) => {
-            logger.error(`${this.getLogPrefix()} Streamable-http transport error:`, error);
+            this.logger?.error(`${this.getLogPrefix()} Streamable-http transport error:`, error);
             this.emitError(error, 'Streamable-http transport error:');
           };
 
           transport.onmessage = (message: JSONRPCMessage) => {
-            logger.info(`${this.getLogPrefix()} Message received: ${JSON.stringify(message)}`);
+            this.logger?.info(
+              `${this.getLogPrefix()} Message received: ${JSON.stringify(message)}`,
+            );
           };
 
           this.setupTransportErrorHandlers(transport);
@@ -288,17 +271,17 @@ export class MCPConnection extends EventEmitter {
         /**
          * // FOR DEBUGGING
          * // this.client.setRequestHandler(PingRequestSchema, async (request, extra) => {
-         * //    logger.info(`[MCP][${this.serverName}] PingRequest: ${JSON.stringify(request)}`);
+         * //    this.logger?.info(`[MCP][${this.serverName}] PingRequest: ${JSON.stringify(request)}`);
          * //    if (getEventListeners && extra.signal) {
          * //      const listenerCount = getEventListeners(extra.signal, 'abort').length;
-         * //      logger.debug(`Signal has ${listenerCount} abort listeners`);
+         * //      this.logger?.debug(`Signal has ${listenerCount} abort listeners`);
          * //    }
          * //    return {};
          * //  });
          */
       } else if (state === 'error' && !this.isReconnecting && !this.isInitializing) {
         this.handleReconnection().catch((error) => {
-          logger.error(`${this.getLogPrefix()} Reconnection handler failed:`, error);
+          this.logger?.error(`${this.getLogPrefix()} Reconnection handler failed:`, error);
         });
       }
     });
@@ -307,15 +290,7 @@ export class MCPConnection extends EventEmitter {
   }
 
   private async handleReconnection(): Promise<void> {
-    if (
-      this.isReconnecting ||
-      this.shouldStopReconnecting ||
-      this.isInitializing ||
-      this.oauthRequired
-    ) {
-      if (this.oauthRequired) {
-        logger.info(`${this.getLogPrefix()} OAuth required, skipping reconnection attempts`);
-      }
+    if (this.isReconnecting || this.shouldStopReconnecting || this.isInitializing) {
       return;
     }
 
@@ -330,7 +305,7 @@ export class MCPConnection extends EventEmitter {
         this.reconnectAttempts++;
         const delay = backoffDelay(this.reconnectAttempts);
 
-        logger.info(
+        this.logger?.info(
           `${this.getLogPrefix()} Reconnecting ${this.reconnectAttempts}/${this.MAX_RECONNECT_ATTEMPTS} (delay: ${delay}ms)`,
         );
 
@@ -341,13 +316,13 @@ export class MCPConnection extends EventEmitter {
           this.reconnectAttempts = 0;
           return;
         } catch (error) {
-          logger.error(`${this.getLogPrefix()} Reconnection attempt failed:`, error);
+          this.logger?.error(`${this.getLogPrefix()} Reconnection attempt failed:`, error);
 
           if (
             this.reconnectAttempts === this.MAX_RECONNECT_ATTEMPTS ||
             (this.shouldStopReconnecting as boolean)
           ) {
-            logger.error(`${this.getLogPrefix()} Stopping reconnection attempts`);
+            this.logger?.error(`${this.getLogPrefix()} Stopping reconnection attempts`);
             return;
           }
         }
@@ -391,21 +366,18 @@ export class MCPConnection extends EventEmitter {
             await this.client.close();
             this.transport = null;
           } catch (error) {
-            logger.warn(`${this.getLogPrefix()} Error closing connection:`, error);
+            this.logger?.warn(`${this.getLogPrefix()} Error closing connection:`, error);
           }
         }
 
         this.transport = this.constructTransport(this.options);
         this.setupTransportDebugHandlers();
 
-        const connectTimeout = this.options.initTimeout ?? 120000;
+        const connectTimeout = this.options.initTimeout ?? 10000;
         await Promise.race([
           this.client.connect(this.transport),
           new Promise((_resolve, reject) =>
-            setTimeout(
-              () => reject(new Error(`Connection timeout after ${connectTimeout}ms`)),
-              connectTimeout,
-            ),
+            setTimeout(() => reject(new Error('Connection timeout')), connectTimeout),
           ),
         ]);
 
@@ -413,85 +385,9 @@ export class MCPConnection extends EventEmitter {
         this.emit('connectionChange', 'connected');
         this.reconnectAttempts = 0;
       } catch (error) {
-        // Check if it's an OAuth authentication error
-        if (this.isOAuthError(error)) {
-          logger.warn(`${this.getLogPrefix()} OAuth authentication required`);
-          this.oauthRequired = true;
-          const serverUrl = this.url;
-          logger.debug(`${this.getLogPrefix()} Server URL for OAuth: ${serverUrl}`);
-
-          const oauthTimeout = this.options.initTimeout ?? 60000;
-          /** Promise that will resolve when OAuth is handled */
-          const oauthHandledPromise = new Promise<void>((resolve, reject) => {
-            let timeoutId: NodeJS.Timeout | null = null;
-            let oauthHandledListener: (() => void) | null = null;
-            let oauthFailedListener: ((error: Error) => void) | null = null;
-
-            /** Cleanup function to remove listeners and clear timeout */
-            const cleanup = () => {
-              if (timeoutId) {
-                clearTimeout(timeoutId);
-              }
-              if (oauthHandledListener) {
-                this.off('oauthHandled', oauthHandledListener);
-              }
-              if (oauthFailedListener) {
-                this.off('oauthFailed', oauthFailedListener);
-              }
-            };
-
-            // Success handler
-            oauthHandledListener = () => {
-              cleanup();
-              resolve();
-            };
-
-            // Failure handler
-            oauthFailedListener = (error: Error) => {
-              cleanup();
-              reject(error);
-            };
-
-            // Timeout handler
-            timeoutId = setTimeout(() => {
-              cleanup();
-              reject(new Error(`OAuth handling timeout after ${oauthTimeout}ms`));
-            }, oauthTimeout);
-
-            // Listen for both success and failure events
-            this.once('oauthHandled', oauthHandledListener);
-            this.once('oauthFailed', oauthFailedListener);
-          });
-
-          // Emit the event
-          this.emit('oauthRequired', {
-            serverName: this.serverName,
-            error,
-            serverUrl,
-            userId: this.userId,
-          });
-
-          try {
-            // Wait for OAuth to be handled
-            await oauthHandledPromise;
-            // Reset the oauthRequired flag
-            this.oauthRequired = false;
-            // Don't throw the error - just return so connection can be retried
-            logger.info(
-              `${this.getLogPrefix()} OAuth handled successfully, connection will be retried`,
-            );
-            return;
-          } catch (oauthError) {
-            // OAuth failed or timed out
-            this.oauthRequired = false;
-            logger.error(`${this.getLogPrefix()} OAuth handling failed:`, oauthError);
-            // Re-throw the original authentication error
-            throw error;
-          }
-        }
-
         this.connectionState = 'error';
         this.emit('connectionChange', 'error');
+        this.lastError = error instanceof Error ? error : new Error(String(error));
         throw error;
       } finally {
         this.connectPromise = null;
@@ -507,7 +403,7 @@ export class MCPConnection extends EventEmitter {
     }
 
     this.transport.onmessage = (msg) => {
-      logger.debug(`${this.getLogPrefix()} Transport received: ${JSON.stringify(msg)}`);
+      this.logger?.debug(`${this.getLogPrefix()} Transport received: ${JSON.stringify(msg)}`);
     };
 
     const originalSend = this.transport.send.bind(this.transport);
@@ -518,7 +414,7 @@ export class MCPConnection extends EventEmitter {
         }
         this.lastPingTime = Date.now();
       }
-      logger.debug(`${this.getLogPrefix()} Transport sending: ${JSON.stringify(msg)}`);
+      this.logger?.debug(`${this.getLogPrefix()} Transport sending: ${JSON.stringify(msg)}`);
       return originalSend(msg);
     };
   }
@@ -531,24 +427,14 @@ export class MCPConnection extends EventEmitter {
         throw new Error('Connection not established');
       }
     } catch (error) {
-      logger.error(`${this.getLogPrefix()} Connection failed:`, error);
+      this.logger?.error(`${this.getLogPrefix()} Connection failed:`, error);
       throw error;
     }
   }
 
   private setupTransportErrorHandlers(transport: Transport): void {
     transport.onerror = (error) => {
-      logger.error(`${this.getLogPrefix()} Transport error:`, error);
-
-      // Check if it's an OAuth authentication error
-      if (error && typeof error === 'object' && 'code' in error) {
-        const errorCode = (error as unknown as { code?: number }).code;
-        if (errorCode === 401 || errorCode === 403) {
-          logger.warn(`${this.getLogPrefix()} OAuth authentication error detected`);
-          this.emit('oauthError', error);
-        }
-      }
-
+      this.logger?.error(`${this.getLogPrefix()} Transport error:`, error);
       this.emit('connectionChange', 'error');
     };
   }
@@ -676,36 +562,22 @@ export class MCPConnection extends EventEmitter {
   //   }
   // }
 
+  // Public getters for state information
+  public getConnectionState(): t.ConnectionState {
+    return this.connectionState;
+  }
+
   public async isConnected(): Promise<boolean> {
     try {
       await this.client.ping();
       return this.connectionState === 'connected';
     } catch (error) {
-      logger.error(`${this.getLogPrefix()} Ping failed:`, error);
+      this.logger?.error(`${this.getLogPrefix()} Ping failed:`, error);
       return false;
     }
   }
 
-  public setOAuthTokens(tokens: MCPOAuthTokens): void {
-    this.oauthTokens = tokens;
-  }
-
-  private isOAuthError(error: unknown): boolean {
-    if (!error || typeof error !== 'object') {
-      return false;
-    }
-
-    // Check for SSE error with 401 status
-    if ('message' in error && typeof error.message === 'string') {
-      return error.message.includes('401') || error.message.includes('Non-200 status code (401)');
-    }
-
-    // Check for error code
-    if ('code' in error) {
-      const code = (error as { code?: number }).code;
-      return code === 401 || code === 403;
-    }
-
-    return false;
+  public getLastError(): Error | null {
+    return this.lastError;
   }
 }

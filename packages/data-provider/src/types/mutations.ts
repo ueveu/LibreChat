@@ -6,13 +6,14 @@ import {
   Assistant,
   AssistantCreateParams,
   AssistantUpdateParams,
+  ActionMetadata,
   FunctionTool,
   AssistantDocument,
+  Action,
   Agent,
   AgentCreateParams,
   AgentUpdateParams,
 } from './assistants';
-import { Action, ActionMetadata } from './agents';
 
 export type MutationOptions<
   Response,

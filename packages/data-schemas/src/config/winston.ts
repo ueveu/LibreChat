@@ -3,8 +3,10 @@ import winston from 'winston';
 import 'winston-daily-rotate-file';
 import { redactFormat, redactMessage, debugTraverse, jsonTruncateFormat } from './parsers';
 
-const logDir = path.join(__dirname, '..', '..', '..', 'api', 'logs');
+// Define log directory
+const logDir = path.join(__dirname, '..', 'logs');
 
+// Type-safe environment variables
 const { NODE_ENV, DEBUG_LOGGING, CONSOLE_JSON, DEBUG_CONSOLE } = process.env;
 
 const useConsoleJson = typeof CONSOLE_JSON === 'string' && CONSOLE_JSON.toLowerCase() === 'true';
@@ -13,6 +15,7 @@ const useDebugConsole = typeof DEBUG_CONSOLE === 'string' && DEBUG_CONSOLE.toLow
 
 const useDebugLogging = typeof DEBUG_LOGGING === 'string' && DEBUG_LOGGING.toLowerCase() === 'true';
 
+// Define custom log levels
 const levels: winston.config.AbstractConfigSetLevels = {
   error: 0,
   warn: 1,

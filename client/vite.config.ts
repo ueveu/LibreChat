@@ -1,10 +1,10 @@
-import react from '@vitejs/plugin-react';
 import path from 'path';
-import type { Plugin } from 'vite';
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
 import { compression } from 'vite-plugin-compression2';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
-import { VitePWA } from 'vite-plugin-pwa';
+import type { Plugin } from 'vite';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => ({
@@ -46,14 +46,14 @@ export default defineConfig(({ command }) => ({
           'assets/maskable-icon.png',
           'manifest.webmanifest',
         ],
-        globIgnores: ['images/**/*', '**/*.map', 'index.html'],
+        globIgnores: ['images/**/*', '**/*.map'],
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
         navigateFallbackDenylist: [/^\/oauth/, /^\/api/],
       },
       includeAssets: [],
       manifest: {
-        name: 'LibreChat',
-        short_name: 'LibreChat',
+        name: 'nxsGPT',
+        short_name: 'nxsGPT',
         start_url: '/',
         display: 'standalone',
         background_color: '#000000',
@@ -169,9 +169,6 @@ export default defineConfig(({ command }) => ({
             if (id.includes('react-select') || id.includes('downshift')) {
               return 'advanced-inputs';
             }
-            if (id.includes('heic-to')) {
-              return 'heic-converter';
-            }
 
             // Existing chunks
             if (id.includes('@radix-ui')) {
@@ -232,7 +229,6 @@ export default defineConfig(({ command }) => ({
     alias: {
       '~': path.join(__dirname, 'src/'),
       $fonts: path.resolve(__dirname, 'public/fonts'),
-      'micromark-extension-math': 'micromark-extension-llm-math',
     },
   },
 }));

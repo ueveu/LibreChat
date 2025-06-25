@@ -3,50 +3,57 @@
 
 services:
   api:
-    container_name: LibreChat
+    container_name: nxsGPT
     ports:
       - "${PORT}:${PORT}"
     depends_on:
       - mongodb
       - rag_api
-    image: ghcr.io/danny-avila/librechat-dev:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.multi
+      target: api-build
     restart: always
-    user: "${UID}:${GID}"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    env_file:
+      - .env
     environment:
       - HOST=0.0.0.0
-      - MONGO_URI=mongodb://mongodb:27017/LibreChat
+      - MONGO_URI=mongodb://root:example@mongodb:27017/nxsGPT?authSource=admin
       - MEILI_HOST=http://meilisearch:7700
       - RAG_PORT=${RAG_PORT:-8000}
       - RAG_API_URL=http://rag_api:${RAG_PORT:-8000}
+      - LOG_DIR=/app/logs
     volumes:
+      - ./logs:/app/api/logs
       - type: bind
         source: ./.env
         target: /app/.env
       - ./librechat.yaml:/app/librechat.yaml
       - ./images:/app/client/public/images
+      - ./client/public/assets:/app/client/public/assets
       - ./uploads:/app/uploads
-      - ./logs:/app/api/logs
   mongodb:
-    container_name: chat-mongodb
-    image: mongo
+    container_name: nxsgpt-mongodb
+    image: mongo:5.0
     restart: always
-    user: "${UID}:${GID}"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
-      - ./data-node:/data/db
-    command: mongod --noauth
+      - datanode:/data/db
+
   meilisearch:
-    container_name: chat-meilisearch
+    container_name: nxsgpt-meilisearch
     image: getmeili/meilisearch:v1.12.3
     restart: always
-    user: "${UID}:${GID}"
     environment:
       - MEILI_HOST=http://meilisearch:7700
       - MEILI_NO_ANALYTICS=true
       - MEILI_MASTER_KEY=${MEILI_MASTER_KEY}
     volumes:
-      - ./meili_data_v1.12:/meili_data
+      - meilidata:/meili_data
   vectordb:
     container_name: vectordb
     image: ankane/pgvector:latest
@@ -72,3 +79,5 @@ services:
 
 volumes:
   pgdata2:
+  datanode:
+  meilidata:

@@ -36,11 +36,10 @@ const plugins = [
 const cjsBuild = {
   input: 'src/index.ts',
   output: {
-    dir: 'dist',
+    file: pkg.main,
     format: 'cjs',
     sourcemap: true,
     exports: 'named',
-    entryFileNames: '[name].js',
   },
   external: [...Object.keys(pkg.dependencies || {}), ...Object.keys(pkg.devDependencies || {})],
   preserveSymlinks: true,

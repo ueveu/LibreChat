@@ -1,12 +1,6 @@
 import { Run, Providers } from '@librechat/agents';
 import { providerEndpointMap, KnownEndpoints } from 'librechat-data-provider';
-import type {
-  StandardGraphConfig,
-  EventHandler,
-  GenericTool,
-  GraphEvents,
-  IState,
-} from '@librechat/agents';
+import type { StandardGraphConfig, EventHandler, GraphEvents, IState } from '@librechat/agents';
 import type { Agent } from 'librechat-data-provider';
 import type * as t from '~/types';
 
@@ -38,7 +32,7 @@ export async function createRun({
   streaming = true,
   streamUsage = true,
 }: {
-  agent: Omit<Agent, 'tools'> & { tools?: GenericTool[] };
+  agent: Agent;
   signal: AbortSignal;
   runId?: string;
   streaming?: boolean;

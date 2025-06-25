@@ -102,7 +102,7 @@ function WebSearch({ conversationId }: { conversationId?: string | null }) {
         defaultChecked={webSearch}
         setValue={debouncedChange}
         label={localize('com_ui_search')}
-        isCheckedClassName="border-blue-600/40 bg-blue-500/10 hover:bg-blue-700/10"
+        isCheckedClassName="border-nextstrategy-primary/40 bg-nextstrategy-primary/10 hover:bg-nextstrategy-mint/10"
         icon={<Globe className="icon-md" />}
       />
       <ApiKeyDialog
