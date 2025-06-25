@@ -17,11 +17,8 @@ const defaultContextValue: ProviderValue = {
   },
 };
 
-export const isDark = (theme: string): boolean => {
-  if (theme === 'system') {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-  }
-  return theme === 'dark';
+export const isDark = (): boolean => {
+  return false; // Always return false to force light mode
 };
 
 export const ThemeContext = createContext<ProviderValue>(defaultContextValue);
@@ -30,28 +27,14 @@ export const ThemeProvider = ({ initialTheme, children }) => {
   const [theme, setTheme] = useState(getInitialTheme);
   const setFontSize = useSetRecoilState(store.fontSize);
 
-  const rawSetTheme = (rawTheme: string) => {
+  const rawSetTheme = () => {
     const root = window.document.documentElement;
-    const darkMode = isDark(rawTheme);
-
-    root.classList.remove(darkMode ? 'light' : 'dark');
-    root.classList.add(darkMode ? 'dark' : 'light');
-
-    localStorage.setItem('color-theme', rawTheme);
+    root.classList.remove('dark');
+    root.classList.add('light');
+    localStorage.setItem('color-theme', 'light');
   };
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const changeThemeOnSystemChange = () => {
-      rawSetTheme(mediaQuery.matches ? 'dark' : 'light');
-    };
-
-    mediaQuery.addEventListener('change', changeThemeOnSystemChange);
-
-    return () => {
-      mediaQuery.removeEventListener('change', changeThemeOnSystemChange);
-    };
-  }, []);
+  // Remove system theme change listener since we only use light theme
 
   useEffect(() => {
     const fontSize = localStorage.getItem('fontSize');
@@ -70,13 +53,10 @@ export const ThemeProvider = ({ initialTheme, children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (initialTheme) {
-    rawSetTheme(initialTheme);
-  }
-
+  // Always set to light theme
   useEffect(() => {
-    rawSetTheme(theme);
-  }, [theme]);
+    rawSetTheme();
+  }, []);
 
   return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>;
 };
