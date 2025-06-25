@@ -1,0 +1,100 @@
+# IMAP MCP Server Configuration
+# Email summarization and processing configuration
+
+# IMAP server configuration
+imap:
+  host: imap.gmail.com
+  port: 993
+  username: your.email@gmail.com
+  # Password will be read from IMAP_PASSWORD environment variable
+  use_ssl: true
+
+# Email processing settings
+processing:
+  # Maximum number of emails to process at once
+  max_emails_per_request: 100
+  
+  # Default number of days to look back for emails
+  default_days_back: 7
+  
+  # Folders to include in processing (leave empty for all folders)
+  allowed_folders:
+    - INBOX
+    - Sent
+    - Archive
+    - Important
+  
+  # Email categorization settings
+  categories:
+    enabled: true
+    # Custom keywords for each category
+    urgent_keywords:
+      - urgent
+      - asap
+      - emergency
+      - critical
+      - deadline
+      - action required
+    
+    work_keywords:
+      - meeting
+      - project
+      - deadline
+      - report
+      - business
+      - conference
+      - presentation
+    
+    personal_keywords:
+      - family
+      - friend
+      - personal
+      - vacation
+      - birthday
+      - social
+    
+    newsletter_keywords:
+      - unsubscribe
+      - newsletter
+      - digest
+      - weekly
+      - monthly
+      - update
+
+# Summarization settings
+summarization:
+  # Default summary type (brief, detailed, action-focused)
+  default_type: brief
+  
+  # Maximum length for email body processing (characters)
+  max_body_length: 2000
+  
+  # Number of top topics to extract
+  max_topics: 8
+  
+  # Number of action items to extract
+  max_action_items: 10
+
+# MCP server settings
+mcp:
+  # Server name identifier
+  server_name: imap-mcp
+  
+  # Enable debug logging
+  debug: false
+  
+  # Timeout for email operations (seconds)
+  operation_timeout: 30
+
+# Security settings
+security:
+  # Enable OAuth2 authentication (if supported)
+  oauth2_enabled: false
+  
+  # Rate limiting
+  rate_limit:
+    # Maximum requests per minute
+    max_requests_per_minute: 60
+    
+    # Maximum emails to process per hour
+    max_emails_per_hour: 1000
