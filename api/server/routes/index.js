@@ -28,6 +28,7 @@ const keys = require('./keys');
 const user = require('./user');
 const ask = require('./ask');
 const n8n = require('./n8n');
+const email = require('./email');
 
 module.exports = {
   ask,
@@ -60,4 +61,5 @@ module.exports = {
   categories,
   staticRoute,
   n8n,
+  email,
 };

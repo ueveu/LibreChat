@@ -118,6 +118,7 @@ const startServer = async () => {
   app.use('/api/memories', routes.memories);
   app.use('/api/tags', routes.tags);
   app.use('/api/n8n', routes.n8n);
+  app.use('/api/email', routes.email);
 
   app.use((req, res) => {
     res.set({

@@ -33,6 +33,19 @@ export interface IUser extends Document {
   personalization?: {
     memories?: boolean;
   };
+  emailConfig?: {
+    host: string;
+    port: number;
+    username: string;
+    use_ssl: boolean;
+    encrypted_password: {
+      encrypted: string;
+      iv: string;
+      authTag: string;
+    };
+    created_at: Date;
+    updated_at: Date;
+  };
   createdAt?: Date;
   updatedAt?: Date;
 }

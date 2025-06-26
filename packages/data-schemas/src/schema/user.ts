@@ -23,6 +23,24 @@ const BackupCodeSchema = new Schema(
   { _id: false },
 );
 
+// Email configuration sub-schema
+const EmailConfigSchema = new Schema(
+  {
+    host: { type: String, required: true },
+    port: { type: Number, required: true },
+    username: { type: String, required: true },
+    use_ssl: { type: Boolean, default: true },
+    encrypted_password: {
+      encrypted: { type: String, required: true },
+      iv: { type: String, required: true },
+      authTag: { type: String, required: true },
+    },
+    created_at: { type: Date, default: Date.now },
+    updated_at: { type: Date, default: Date.now },
+  },
+  { _id: false },
+);
+
 const userSchema = new Schema<IUser>(
   {
     name: {
@@ -137,6 +155,10 @@ const userSchema = new Schema<IUser>(
         },
       },
       default: {},
+    },
+    emailConfig: {
+      type: EmailConfigSchema,
+      required: false,
     },
   },
   { timestamps: true },

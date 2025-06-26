@@ -48,6 +48,12 @@ __blobstorage__/**/*
 # see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
 node_modules/
 meili_data/
+
+# Email MCP virtual environment and temporary files
+email-mcp-venv/
+task-master/
+usage_tracking2.json
+git
 api/node_modules/
 client/node_modules/
 bower_components/
@@ -245,3 +251,5 @@ CLAUDE.md
 CLAUDE.md   
 .roo/mcp.json
 .taskmaster/tasks/tasks.json
+.gemini/gemini.md
+.gemini/gemini.md
