@@ -38,7 +38,7 @@ describe('models/Agent', () => {
       const mongoUri = mongoServer.getUri();
       Agent = mongoose.models.Agent || mongoose.model('Agent', agentSchema);
       await mongoose.connect(mongoUri);
-    });
+    }, 20000);
 
     afterAll(async () => {
       await mongoose.disconnect();
@@ -407,7 +407,7 @@ describe('models/Agent', () => {
       mongoServer = await MongoMemoryServer.create();
       const mongoUri = mongoServer.getUri();
       await mongoose.connect(mongoUri);
-    });
+    }, 20000);
 
     afterAll(async () => {
       await mongoose.disconnect();
@@ -664,7 +664,7 @@ describe('models/Agent', () => {
       const mongoUri = mongoServer.getUri();
       Agent = mongoose.models.Agent || mongoose.model('Agent', agentSchema);
       await mongoose.connect(mongoUri);
-    });
+    }, 20000);
 
     afterAll(async () => {
       await mongoose.disconnect();
@@ -1326,7 +1326,7 @@ describe('models/Agent', () => {
       const mongoUri = mongoServer.getUri();
       Agent = mongoose.models.Agent || mongoose.model('Agent', agentSchema);
       await mongoose.connect(mongoUri);
-    });
+    }, 20000);
 
     afterAll(async () => {
       await mongoose.disconnect();
@@ -1508,7 +1508,7 @@ describe('models/Agent', () => {
       const mongoUri = mongoServer.getUri();
       Agent = mongoose.models.Agent || mongoose.model('Agent', agentSchema);
       await mongoose.connect(mongoUri);
-    });
+    }, 20000);
 
     afterAll(async () => {
       await mongoose.disconnect();
@@ -1802,7 +1802,7 @@ describe('models/Agent', () => {
       const mongoUri = mongoServer.getUri();
       Agent = mongoose.models.Agent || mongoose.model('Agent', agentSchema);
       await mongoose.connect(mongoUri);
-    });
+    }, 20000);
 
     afterAll(async () => {
       await mongoose.disconnect();
@@ -2357,7 +2357,7 @@ describe('models/Agent', () => {
       const mongoUri = mongoServer.getUri();
       Agent = mongoose.models.Agent || mongoose.model('Agent', agentSchema);
       await mongoose.connect(mongoUri);
-    });
+    }, 20000);
 
     afterAll(async () => {
       await mongoose.disconnect();
