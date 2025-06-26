@@ -55,10 +55,7 @@ const dashboardRoutes = {
       ],
     },
     */
-    {
-      path: 'email',
-      element: <EmailDashboard />,
-    },
+    
     {
       path: 'prompts/*',
       element: <PromptsView />,

@@ -72,7 +72,7 @@ export default function NewChat({
         />
         <div className="flex">
           {headerButtons}
-          <N8NButton isSmallScreen={isSmallScreen} />
+          
           <TooltipAnchor
             description={localize('com_ui_new_chat')}
             render={

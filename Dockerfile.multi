@@ -71,6 +71,8 @@ COPY --from=client-build /app/client/dist ./client/dist
 # Create and own the log directory
 RUN mkdir -p /app/packages/data-schemas/logs && chown -R node:node /app/packages/data-schemas/logs
 
+
+
 USER node
 WORKDIR /app/api
 EXPOSE 3080
