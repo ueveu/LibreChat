@@ -1,0 +1,85 @@
+# Master Configuration for LibreChat
+
+# Version of the config file
+version: 1.2.1
+
+
+
+# Cache settings
+cache: true
+
+# File upload configuration
+fileConfig:
+  endpoints:
+    custom:
+      disabled: false
+      fileLimit: 10
+      fileSizeLimit: 50
+      totalSizeLimit: 1000
+      supportedMimeTypes:
+        - "image/.*"
+        - "text/.*"
+        - "application/pdf"
+        - "application/msword"
+        - "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  serverFileSizeLimit: 1000
+  avatarSizeLimit: 2
+
+# Custom interface configuration
+interface:
+  appTitle: "nxsGPT"
+  endpointsMenu: true
+  modelSelect: true
+  parameters: true
+  sidePanel: true
+  presets: true
+  prompts: true
+  bookmarks: true
+  multiConvo: true
+  agents: true
+
+# Actions Object Structure
+actions:
+  allowedDomains:
+    - "swapi.dev"
+    - "librechat.ai"
+    - "google.com"
+
+# Definition of endpoints
+endpoints:
+  azureOpenAI:
+    titleModel: "gpt-4o"
+    plugins: true
+    assistants: true
+    summarize: true
+    summaryModel: "gpt-4o"
+    titleConvo: true
+    titleMethod: "functions"
+    userProvided: false
+    groups:
+      - group: "nikla-azure"
+        apiKey: "${AZURE_OPENAI_API_KEY}"
+        instanceName: "nikla-mca9fmhi-swedencentral"
+        version: "2024-03-01-preview"
+        assistants: true
+        models:
+          gpt-4o:
+            deploymentName: gpt-4o
+            version: "2024-03-01-preview"
+  custom:
+    - name: "Ollama"
+      apiKey: "ollama"
+      baseURL: "http://138.199.157.172:11434/v1"
+      models:
+        default: [
+          "mistral:7b"
+        ]
+        fetch: true
+      titleConvo: true
+      titleModel: "mistral:7b"
+      summarize: false
+      summaryModel: "mistral:7b"
+      forcePrompt: false
+      modelDisplayLabel: "Ollama"
+      iconURL: "/assets/ollama.png"
+
