@@ -22,6 +22,14 @@ const {
 } = require('./Message');
 const { getConvoTitle, getConvo, saveConvo, deleteConvos } = require('./Conversation');
 const { getPreset, getPresets, savePreset, deletePresets } = require('./Preset');
+const {
+  getSharedMessages,
+  getSharedLink,
+  createSharedLink,
+  updateSharedLink,
+  getSharedLinks,
+  deleteSharedLink,
+} = require('./Share');
 
 module.exports = {
   ...methods,
@@ -51,4 +59,11 @@ module.exports = {
   getPresets,
   savePreset,
   deletePresets,
+
+  getSharedMessages,
+  getSharedLink,
+  createSharedLink,
+  updateSharedLink,
+  getSharedLinks,
+  deleteSharedLink,
 };

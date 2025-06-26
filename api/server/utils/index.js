@@ -2,7 +2,6 @@ const removePorts = require('./removePorts');
 const countTokens = require('./countTokens');
 const handleText = require('./handleText');
 const sendEmail = require('./sendEmail');
-const cryptoUtils = require('./crypto');
 const queue = require('./queue');
 const files = require('./files');
 
@@ -28,7 +27,6 @@ function checkEmailConfig() {
 
 module.exports = {
   checkEmailConfig,
-  ...cryptoUtils,
   ...handleText,
   countTokens,
   removePorts,
