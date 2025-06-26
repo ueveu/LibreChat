@@ -160,9 +160,6 @@ CLAUDE.md
 .taskmaster/docs/librechat_optimization_prd.txt
 .taskmaster/templates/example_prd.txt
 
-# Task files
-# tasks.json
-# tasks/ 
 .gitignore
 .roomodes
 AGENTS.md
@@ -253,3 +250,7 @@ CLAUDE.md
 .taskmaster/tasks/tasks.json
 .gemini/gemini.md
 .gemini/gemini.md
+
+# Task files
+# tasks.json
+# tasks/ 

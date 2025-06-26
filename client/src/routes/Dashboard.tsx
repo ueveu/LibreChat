@@ -5,6 +5,7 @@ import {
   CreatePromptForm,
   EmptyPromptPreview,
 } from '~/components/Prompts';
+import { EmailDashboard } from '~/components/Email';
 import DashboardRoute from './Layouts/Dashboard';
 
 const dashboardRoutes = {
@@ -54,6 +55,10 @@ const dashboardRoutes = {
       ],
     },
     */
+    {
+      path: 'email',
+      element: <EmailDashboard />,
+    },
     {
       path: 'prompts/*',
       element: <PromptsView />,

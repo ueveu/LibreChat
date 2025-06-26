@@ -29,6 +29,7 @@ const {
   updateSharedLink,
   getSharedLinks,
   deleteSharedLink,
+  deleteAllSharedLinks,
 } = require('./Share');
 
 module.exports = {
@@ -66,4 +67,5 @@ module.exports = {
   updateSharedLink,
   getSharedLinks,
   deleteSharedLink,
+  deleteAllSharedLinks,
 };

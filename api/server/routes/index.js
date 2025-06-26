@@ -25,12 +25,9 @@ const auth = require('./auth');
 const edit = require('./edit');
 const keys = require('./keys');
 const user = require('./user');
-const ask = require('./ask');
-const n8n = require('./n8n');
 const email = require('./email');
 
 module.exports = {
-  ask,
   edit,
   auth,
   keys,
@@ -58,6 +55,5 @@ module.exports = {
   assistants,
   categories,
   staticRoute,
-  n8n,
   email,
 };

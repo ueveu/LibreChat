@@ -1,64 +1,5 @@
-const mongoose = require('mongoose');
 const { logger } = require('~/config');
-
-/**
- * Shared Link Schema
- */
-const sharedLinkSchema = new mongoose.Schema(
-  {
-    shareId: {
-      type: String,
-      required: true,
-      unique: true,
-      index: true,
-    },
-    conversationId: {
-      type: String,
-      required: true,
-      index: true,
-    },
-    title: {
-      type: String,
-      required: true,
-    },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-      index: true,
-    },
-    messages: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Message',
-      },
-    ],
-    isPublic: {
-      type: Boolean,
-      default: false,
-    },
-    isAnonymous: {
-      type: Boolean,
-      default: false,
-    },
-    showCode: {
-      type: Boolean,
-      default: true,
-    },
-    isHelpView: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  {
-    timestamps: true,
-  },
-);
-
-// Compound index for efficient queries
-sharedLinkSchema.index({ user: 1, createdAt: -1 });
-
-const SharedLink = mongoose.model('SharedLink', sharedLinkSchema);
+const { SharedLink } = require('~/db/models');
 
 /**
  * Get shared messages by shareId
@@ -193,6 +134,25 @@ async function deleteSharedLink(params) {
   }
 }
 
+/**
+ * Delete all shared links for a user
+ * @param {string} userId - The user ID
+ * @returns {Promise<Object>} Delete result
+ */
+async function deleteAllSharedLinks(userId) {
+  try {
+    const result = await SharedLink.deleteMany({ user: userId });
+    
+    return {
+      acknowledged: result.acknowledged,
+      deletedCount: result.deletedCount,
+    };
+  } catch (error) {
+    logger.error('Error deleting all shared links for user:', error);
+    throw error;
+  }
+}
+
 module.exports = {
   SharedLink,
   getSharedMessages,
@@ -201,4 +161,5 @@ module.exports = {
   updateSharedLink,
   getSharedLinks,
   deleteSharedLink,
+  deleteAllSharedLinks,
 };
